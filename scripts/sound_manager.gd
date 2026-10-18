@@ -46,6 +46,14 @@ func play_respawn() -> void:
 	var stream = _generate_arpeggio([440.0, 554.37, 659.25, 880.0], 0.07, 0.4)
 	_play_stream(stream, -5.0)
 
+func play_interact() -> void:
+	var stream = _generate_arpeggio([523.25, 659.25, 783.99, 1046.5], 0.05, 0.35)
+	_play_stream(stream, -5.0)
+
+func play_engine_rev() -> void:
+	var stream = _generate_tone_sweep(180.0, 480.0, 0.3, 0.4)
+	_play_stream(stream, -6.0)
+
 func _play_stream(stream: AudioStreamWAV, volume_db: float = 0.0) -> void:
 	var player = AudioStreamPlayer.new()
 	player.stream = stream

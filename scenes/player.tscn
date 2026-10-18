@@ -49,6 +49,9 @@ height = 0.45
 material = SubResource("Mat_Limb")
 size = Vector3(0.1, 0.4, 0.1)
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_interact_detector"]
+radius = 2.4
+
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
 collision_mask = 1
@@ -57,6 +60,14 @@ script = ExtResource("1_script")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 shape = SubResource("CapsuleShape3D_root")
+
+[node name="InteractionDetector" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+shape = SubResource("SphereShape3D_interact_detector")
 
 [node name="VisualModel" type="Node3D" parent="."]
 

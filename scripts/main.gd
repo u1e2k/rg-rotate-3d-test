@@ -32,6 +32,14 @@ const SettingsScript = preload("res://scripts/settings_manager.gd")
 @onready var cam_value_label: Label = $HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting/HBox/CamValueLabel
 @onready var close_btn: Button = $HUD/SettingsMenu/Center/Panel/Margin/VBox/CloseButton
 
+# Interaction & Vehicle references
+@onready var airplane: Node3D = $Environment/Airplane
+@onready var interact_prompt_panel: Control = $HUD/InteractPrompt
+@onready var interact_prompt_label: Label = $HUD/InteractPrompt/PromptLabel
+@onready var guide_title: Label = $HUD/MarginContainer/BottomBar/ControlGuide/VBox/Title
+@onready var guide_row1: Label = $HUD/MarginContainer/BottomBar/ControlGuide/VBox/Row1
+@onready var guide_row2: Label = $HUD/MarginContainer/BottomBar/ControlGuide/VBox/Row2
+
 var total_gems: int = 0
 var collected_gems: int = 0
 var elapsed_time: float = 0.0
@@ -54,6 +62,13 @@ func _ready() -> void:
 	_update_hud()
 	clear_banner.visible = false
 	settings_menu.visible = false
+	interact_prompt_panel.visible = false
+	
+	if player and player.has_signal("nearby_interactable_changed"):
+		player.connect("nearby_interactable_changed", _on_player_nearby_interactable_changed)
+		
+	if airplane and airplane.has_signal("board_state_changed"):
+		airplane.connect("board_state_changed", _on_airplane_board_state_changed)
 
 func _setup_settings_ui() -> void:
 	menu_items = [turn_slider, cam_slider, close_btn]
@@ -191,12 +206,32 @@ func _update_input_overlay() -> void:
 	_set_key_active(key_right, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_RIGHT) or Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D))
 	
 	# Action buttons (strictly 1-to-1, completely isolated!)
-	_set_key_active(key_a, Input.is_joy_button_pressed(0, JOY_BUTTON_A) or Input.is_key_pressed(KEY_SPACE))
-	_set_key_active(key_b, Input.is_joy_button_pressed(0, JOY_BUTTON_B) or Input.is_key_pressed(KEY_SHIFT))
+	_set_key_active(key_a, Input.is_joy_button_pressed(0, JOY_BUTTON_A) or Input.is_key_pressed(KEY_E) or Input.is_key_pressed(KEY_ENTER))
+	_set_key_active(key_b, Input.is_joy_button_pressed(0, JOY_BUTTON_B) or Input.is_key_pressed(KEY_SPACE))
 	_set_key_active(key_x, Input.is_joy_button_pressed(0, JOY_BUTTON_X) or Input.is_key_pressed(KEY_X))
-	_set_key_active(key_y, Input.is_joy_button_pressed(0, JOY_BUTTON_Y) or Input.is_key_pressed(KEY_C))
+	_set_key_active(key_y, Input.is_joy_button_pressed(0, JOY_BUTTON_Y) or Input.is_key_pressed(KEY_SHIFT))
 	_set_key_active(key_lb, Input.is_joy_button_pressed(0, JOY_BUTTON_LEFT_SHOULDER) or Input.is_key_pressed(KEY_Q))
-	_set_key_active(key_rb, Input.is_joy_button_pressed(0, JOY_BUTTON_RIGHT_SHOULDER) or Input.is_key_pressed(KEY_F) or Input.is_key_pressed(KEY_E))
+	_set_key_active(key_rb, Input.is_joy_button_pressed(0, JOY_BUTTON_RIGHT_SHOULDER) or Input.is_key_pressed(KEY_F))
+
+func _on_player_nearby_interactable_changed(interactable: Interactable) -> void:
+	if interactable and interactable.can_interact(player):
+		interact_prompt_panel.visible = true
+		interact_prompt_label.text = interactable.get_prompt()
+	else:
+		interact_prompt_panel.visible = false
+
+func _on_airplane_board_state_changed(is_boarded: bool) -> void:
+	interact_prompt_panel.visible = false
+	if is_boarded:
+		guide_title.text = "✈️ FLIGHT MODE / AIRPLANE CONTROLS"
+		guide_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3, 1.0))
+		guide_row1.text = "▲ 降下 (Dive)　▼ 上昇 (Climb)　◀ ▶ 旋回ロール"
+		guide_row2.text = "[Y] 加速　[B] 減速/着陸　[RB] 連装射撃　[A] 降りる"
+	else:
+		guide_title.text = "ANBERNIC RG ROTATE / D-PAD CONTROLS"
+		guide_title.add_theme_color_override("font_color", Color(0.3, 0.8, 1.0, 1.0))
+		guide_row1.text = "▲ 前進　▼ 後退　◀ ▶ 旋回"
+		guide_row2.text = "[A] 調べる/乗る　[B] ジャンプ　[Y] ダッシュ　[RB] 射撃　[LB] 180°反転　[Start] 設定"
 
 func _set_key_active(label: Label, is_active: bool) -> void:
 	if is_active:

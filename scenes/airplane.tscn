@@ -1,0 +1,198 @@
+[gd_scene load_steps=22 format=3 uid="uid://airplaneracing3d"]
+
+[ext_resource type="Script" path="res://scripts/airplane.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/vehicle_interactable.gd" id="2_interact"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_root"]
+size = Vector3(3.6, 1.2, 3.0)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_interact"]
+radius = 2.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_PlaneBody"]
+albedo_color = Color(0.9, 0.22, 0.27, 1)
+metallic = 0.25
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_Fuselage"]
+material = SubResource("Mat_PlaneBody")
+size = Vector3(0.68, 0.65, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="Mat_AccentWhite"]
+albedo_color = Color(0.95, 0.96, 0.98, 1)
+metallic = 0.1
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_Stripe"]
+material = SubResource("Mat_AccentWhite")
+size = Vector3(0.7, 0.1, 1.6)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Canopy"]
+albedo_color = Color(0.1, 0.85, 0.95, 0.85)
+metallic = 0.7
+roughness = 0.15
+emission_enabled = true
+emission = Color(0.05, 0.6, 0.85, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_Canopy"]
+material = SubResource("Mat_Canopy")
+size = Vector3(0.48, 0.32, 0.95)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Propeller"]
+albedo_color = Color(0.15, 0.17, 0.22, 1)
+metallic = 0.8
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_Blade"]
+material = SubResource("Mat_Propeller")
+size = Vector3(1.35, 0.12, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_BladeCross"]
+material = SubResource("Mat_Propeller")
+size = Vector3(0.12, 1.35, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Wing"]
+material = SubResource("Mat_PlaneBody")
+size = Vector3(4.2, 0.08, 0.75)
+
+[sub_resource type="StandardMaterial3D" id="Mat_NavL"]
+albedo_color = Color(1, 0.15, 0.25, 1)
+emission_enabled = true
+emission = Color(1, 0.15, 0.25, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_WingletL"]
+material = SubResource("Mat_NavL")
+size = Vector3(0.08, 0.28, 0.45)
+
+[sub_resource type="StandardMaterial3D" id="Mat_NavR"]
+albedo_color = Color(0.2, 1, 0.4, 1)
+emission_enabled = true
+emission = Color(0.2, 1, 0.4, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_WingletR"]
+material = SubResource("Mat_NavR")
+size = Vector3(0.08, 0.28, 0.45)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Gun"]
+material = SubResource("Mat_Propeller")
+top_radius = 0.04
+bottom_radius = 0.04
+height = 0.55
+
+[sub_resource type="BoxMesh" id="BoxMesh_TailH"]
+material = SubResource("Mat_PlaneBody")
+size = Vector3(1.5, 0.06, 0.42)
+
+[sub_resource type="BoxMesh" id="BoxMesh_TailV"]
+material = SubResource("Mat_AccentWhite")
+size = Vector3(0.08, 0.65, 0.55)
+
+[node name="Airplane" type="CharacterBody3D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_root")
+
+[node name="InteractArea" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("2_interact")
+prompt_text = "[A] 飛行機に搭乗"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("SphereShape3D_interact")
+
+[node name="VisualModel" type="Node3D" parent="."]
+
+[node name="Fuselage" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("BoxMesh_Fuselage")
+
+[node name="Stripe" type="MeshInstance3D" parent="VisualModel/Fuselage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, -0.15)
+mesh = SubResource("BoxMesh_Stripe")
+
+[node name="Canopy" type="MeshInstance3D" parent="VisualModel/Fuselage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, -0.2)
+mesh = SubResource("BoxMesh_Canopy")
+
+[node name="NoseCone" type="Node3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -1.25)
+
+[node name="Propeller" type="Node3D" parent="VisualModel/NoseCone"]
+
+[node name="Blade1" type="MeshInstance3D" parent="VisualModel/NoseCone/Propeller"]
+mesh = SubResource("BoxMesh_Blade")
+
+[node name="Blade2" type="MeshInstance3D" parent="VisualModel/NoseCone/Propeller"]
+mesh = SubResource("BoxMesh_BladeCross")
+
+[node name="MainWing" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -0.2)
+mesh = SubResource("BoxMesh_Wing")
+
+[node name="LeftWinglet" type="MeshInstance3D" parent="VisualModel/MainWing"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 0.12, 0)
+mesh = SubResource("BoxMesh_WingletL")
+
+[node name="RightWinglet" type="MeshInstance3D" parent="VisualModel/MainWing"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0.12, 0)
+mesh = SubResource("BoxMesh_WingletR")
+
+[node name="LeftGun" type="MeshInstance3D" parent="VisualModel/MainWing"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1.2, -0.1, -0.1)
+mesh = SubResource("CylinderMesh_Gun")
+
+[node name="LeftMuzzle" type="Marker3D" parent="VisualModel/MainWing/LeftGun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 0)
+
+[node name="RightGun" type="MeshInstance3D" parent="VisualModel/MainWing"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.2, -0.1, -0.1)
+mesh = SubResource("CylinderMesh_Gun")
+
+[node name="RightMuzzle" type="Marker3D" parent="VisualModel/MainWing/RightGun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 0)
+
+[node name="Tail" type="Node3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 1.05)
+
+[node name="HorizontalFin" type="MeshInstance3D" parent="VisualModel/Tail"]
+mesh = SubResource("BoxMesh_TailH")
+
+[node name="VerticalFin" type="MeshInstance3D" parent="VisualModel/Tail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -0.05)
+mesh = SubResource("BoxMesh_TailV")
+
+[node name="EngineLight" type="OmniLight3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 1.35)
+light_color = Color(0.2, 0.85, 1, 1)
+light_energy = 1.2
+omni_range = 3.0
+
+[node name="PromptLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+billboard = 1
+modulate = Color(0.2, 0.95, 1, 1)
+text = "[A] 搭乗する"
+font_size = 32
+outline_size = 6
+
+[node name="CameraMount" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraMount"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0.6, 0)
+collision_mask = 1
+spring_length = 5.2
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraMount/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.2)
+fov = 72.0

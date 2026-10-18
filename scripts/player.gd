@@ -15,7 +15,10 @@ const BulletScene = preload("res://scenes/bullet.tscn")
 @export var camera_follow_speed: float = 8.0
 @export var camera_rotation_speed: float = 5.0
 
+signal nearby_interactable_changed(interactable: Interactable)
+
 # Node references
+@onready var interaction_detector: Area3D = $InteractionDetector
 @onready var camera_mount: Node3D = $CameraMount
 @onready var spring_arm: SpringArm3D = $CameraMount/SpringArm3D
 @onready var camera: Camera3D = $CameraMount/SpringArm3D/Camera3D
@@ -42,6 +45,7 @@ var quick_turn_target_yaw: float = 0.0
 var was_on_floor_last: bool = true
 var spawn_position: Vector3 = Vector3(0, 1.5, 0)
 var spawn_rotation: float = 0.0
+var current_interactable: Interactable = null
 
 func suppress_input(duration: float = 0.25) -> void:
 	input_suppress_timer = duration
@@ -57,6 +61,10 @@ func _ready() -> void:
 	camera_mount.top_level = true
 	camera_mount.global_position = global_position
 	camera_mount.rotation.y = rotation.y
+	
+	if interaction_detector:
+		interaction_detector.area_entered.connect(_on_interact_area_entered)
+		interaction_detector.area_exited.connect(_on_interact_area_exited)
 
 func apply_settings() -> void:
 	turn_speed = SettingsScript.turn_sensitivity
@@ -103,11 +111,33 @@ func _physics_process(delta: float) -> void:
 	_process_movement(delta)
 	_process_jump()
 	_process_shoot(delta)
+	_process_interact()
 	
 	move_and_slide()
 	
 	_update_camera(delta)
 	_update_procedural_animation(delta)
+
+func _process_interact() -> void:
+	if Input.is_action_just_pressed("interact"):
+		if current_interactable and current_interactable.can_interact(self):
+			current_interactable.interact(self)
+			emit_signal("nearby_interactable_changed", current_interactable)
+
+func _on_interact_area_entered(area: Area3D) -> void:
+	if area is Interactable:
+		current_interactable = area
+		emit_signal("nearby_interactable_changed", current_interactable)
+
+func _on_interact_area_exited(area: Area3D) -> void:
+	if area == current_interactable:
+		current_interactable = null
+		if interaction_detector:
+			for a in interaction_detector.get_overlapping_areas():
+				if a is Interactable:
+					current_interactable = a
+					break
+		emit_signal("nearby_interactable_changed", current_interactable)
 
 func _process_shoot(delta: float) -> void:
 	if shoot_cooldown_timer > 0.0:

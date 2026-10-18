@@ -1,0 +1,99 @@
+[gd_scene load_steps=12 format=3 uid="uid://c3termtestscene3d"]
+
+[ext_resource type="Script" path="res://scripts/interactive_terminal.gd" id="1_script"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_interact"]
+height = 2.0
+radius = 1.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_MetalDark"]
+albedo_color = Color(0.18, 0.22, 0.28, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Base"]
+material = SubResource("Mat_MetalDark")
+top_radius = 0.65
+bottom_radius = 0.75
+height = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_Pillar"]
+material = SubResource("Mat_MetalDark")
+size = Vector3(0.4, 0.7, 0.35)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Console"]
+albedo_color = Color(0.12, 0.15, 0.2, 1)
+metallic = 0.5
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_Console"]
+material = SubResource("Mat_Console")
+size = Vector3(0.5, 0.3, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Screen"]
+albedo_color = Color(0.05, 0.05, 0.08, 1)
+emission_enabled = true
+emission = Color(0.95, 0.2, 0.2, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_Screen"]
+material = SubResource("Mat_Screen")
+size = Vector2(0.4, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="Mat_CrystalCore"]
+albedo_color = Color(0.85, 0.95, 1, 0.9)
+metallic = 0.2
+roughness = 0.1
+emission_enabled = true
+emission = Color(0.3, 0.8, 1, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="PrismMesh" id="PrismMesh_Core"]
+material = SubResource("Mat_CrystalCore")
+size = Vector3(0.35, 0.45, 0.35)
+
+[node name="InteractiveTerminal" type="Area3D"]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("CylinderShape3D_interact")
+
+[node name="Pedestal" type="Node3D" parent="."]
+
+[node name="Base" type="MeshInstance3D" parent="Pedestal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
+mesh = SubResource("CylinderMesh_Base")
+
+[node name="Pillar" type="MeshInstance3D" parent="Pedestal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("BoxMesh_Pillar")
+
+[node name="Console" type="MeshInstance3D" parent="Pedestal"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.95, 0.05)
+mesh = SubResource("BoxMesh_Console")
+
+[node name="Screen" type="MeshInstance3D" parent="Pedestal/Console"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, 0.02)
+mesh = SubResource("QuadMesh_Screen")
+
+[node name="EnergyCore" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 1.35, 0)
+mesh = SubResource("PrismMesh_Core")
+
+[node name="TerminalLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+light_color = Color(0.95, 0.2, 0.2, 1)
+light_energy = 0.8
+omni_range = 3.5
+
+[node name="StatusLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+billboard = 1
+modulate = Color(1, 0.35, 0.25, 1)
+text = "○ STANDBY
+PRESS [A]"
+font_size = 32
+outline_size = 6
