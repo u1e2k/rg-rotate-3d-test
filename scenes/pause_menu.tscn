@@ -1,0 +1,189 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7v6k9q1w3m8p"]
+
+[ext_resource type="Script" path="res://scripts/pause_menu.gd" id="1_pause_menu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ModalPanel"]
+bg_color = Color(0.07, 0.09, 0.14, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.5, 0.9, 0.85)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Btn"]
+bg_color = Color(0.12, 0.22, 0.38, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.6, 0.95, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnFocus"]
+bg_color = Color(0.2, 0.4, 0.75, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.85, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 100
+script = ExtResource("1_pause_menu")
+
+[node name="Modal" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="Modal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Center" type="CenterContainer" parent="Modal"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Modal/Center"]
+custom_minimum_size = Vector2(560, 440)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ModalPanel")
+
+[node name="Margin" type="MarginContainer" parent="Modal/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Modal/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "⚙️ PAUSE & SETTINGS"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="TurnSetting" type="VBoxContainer" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="Modal/Center/Panel/Margin/VBox/TurnSetting"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "🔄 旋回感度 (Turn Sensitivity)"
+
+[node name="HBox" type="HBoxContainer" parent="Modal/Center/Panel/Margin/VBox/TurnSetting"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TurnSlider" type="HSlider" parent="Modal/Center/Panel/Margin/VBox/TurnSetting/HBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 5.0
+step = 0.1
+value = 2.8
+
+[node name="TurnValueLabel" type="Label" parent="Modal/Center/Panel/Margin/VBox/TurnSetting/HBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "2.8 (標準)"
+horizontal_alignment = 2
+
+[node name="CamSetting" type="VBoxContainer" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="Modal/Center/Panel/Margin/VBox/CamSetting"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "🎥 カメラ追従速度 (Camera Smoothing)"
+
+[node name="HBox" type="HBoxContainer" parent="Modal/Center/Panel/Margin/VBox/CamSetting"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CamSlider" type="HSlider" parent="Modal/Center/Panel/Margin/VBox/CamSetting/HBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 2.0
+max_value = 10.0
+step = 0.5
+value = 5.0
+
+[node name="CamValueLabel" type="Label" parent="Modal/Center/Panel/Margin/VBox/CamSetting/HBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "5.0"
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ResumeButton" type="Button" parent="Modal/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
+text = "ゲームに戻る [Start / A / B]"
+
+[node name="ExitHubButton" type="Button" parent="Modal/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
+text = "🏠 モード選択へ戻る (Exit to Launcher)"
+
+[node name="Guide" type="Label" parent="Modal/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "▲▼: 移動 ｜ ◀▶: 調整 ｜ A: 決定 ｜ B/Start: 閉じる"
+horizontal_alignment = 1

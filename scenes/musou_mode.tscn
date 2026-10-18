@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
 [ext_resource type="Script" path="res://scripts/musou_player.gd" id="3_player"]
 [ext_resource type="Script" path="res://scripts/musou_horde.gd" id="4_horde"]
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="5_pause_menu"]
 
 [sub_resource type="Environment" id="Environment_Musou"]
 background_mode = 1
@@ -250,100 +251,7 @@ theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
-[node name="SettingsMenu" type="Control" parent="HUD"]
-process_mode = 3
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="HUD/SettingsMenu"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.65)
-
-[node name="Center" type="CenterContainer" parent="HUD/SettingsMenu"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Panel" type="PanelContainer" parent="HUD/SettingsMenu/Center"]
-custom_minimum_size = Vector2(520, 360)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
-
-[node name="Margin" type="MarginContainer" parent="HUD/SettingsMenu/Center/Panel"]
-layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 14
-
-[node name="VBox" type="VBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="Title" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "⚙️ HORDE BENCHMARK SETTINGS"
-horizontal_alignment = 1
-
-[node name="TurnSetting" type="VBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="Label" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "🔄 旋回感度 (Turn Sensitivity)"
-
-[node name="HBox" type="HBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="TurnSlider" type="HSlider" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting/HBox"]
-custom_minimum_size = Vector2(0, 32)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-min_value = 1.0
-max_value = 5.0
-step = 0.1
-value = 2.8
-
-[node name="TurnValueLabel" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting/HBox"]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 15
-text = "2.8"
-horizontal_alignment = 2
-
-[node name="CloseButton" type="Button" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
-text = "閉じる / バトルに戻る [Start / A / B]"
-
-[node name="ExitToHubButton" type="Button" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
-text = "🏠 モード選択へ戻る (Exit to Launcher)"
+[node name="PauseMenu" parent="." instance=ExtResource("5_pause_menu")]
 
 [node name="InputOverlay" type="Control" parent="HUD"]
 layout_mode = 3
