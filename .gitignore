@@ -33,3 +33,4 @@ bin/
 # Temporary / OS
 .DS_Store
 Thumbs.db
+.wiki/

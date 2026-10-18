@@ -1,81 +1,55 @@
 # RG Rotate 3D Test Game
 
-Anbernic **RG Rotate**（3.5インチ 720×720 正方形液晶・十字キー＆物理ボタン搭載・スティック非搭載）に最適化したGodot 4製 3Dテスト用ゲームです。
+Anbernic **RG Rotate**（3.5インチ 720×720 正方形液晶・十字キー＆物理ボタン搭載・スティック非搭載）に最適化した Godot 4 製 3D テスト用ゲームです。
 
 <p align="center">
-  <img src="docs/images/screenshot.png" width="480" alt="RG Rotate 3D Test Stage" />
+  <img src="docs/images/screenshot.png" width="460" alt="RG Rotate 3D Test Stage" />
   <br />
-  <em>実機（RG Rotate 720x720）での動作画面</em>
+  <em>実機（RG Rotate 720×720 / Mali-G52 MP2）にて安定 60 FPS 動作</em>
 </p>
 
 ---
 
-## 🎮 操作方法 (Controls)
+## 📖 開発ナレッジ・完全ガイド (GitHub Wiki)
 
-本アプリは「**スティックが無くても快適に遊べる三人称視点（TPS）タンク/カメラ連動コントロール**」を採用しています。
+本リポジトリで確立した技術知見（60 FPS レンダリング設定、スティックレス 3D 操作設計、物理ボタンの罠、乗り物システムなど）は、今後の別ゲーム制作でもそのまま活用できるよう **[GitHub Wiki](https://github.com/u1e2k/rg-rotate-3d-test/wiki)** に完全ドキュメント化しています。
 
-### 通常時（徒歩モード）
-| ボタン / キー | 動作 | 説明 |
-|---|---|---|
-| **十字キー 上 (▲ / ↑ / W)** | **前進 (Forward)** | 向いている正面へ前進。足踏みアニメーション＆足音。 |
-| **十字キー 下 (▼ / ↓ / S)** | **後退 (Backward)** | ゆっくりと後ろ向きに歩行。 |
-| **十字キー 左右 (◀ ▶ / ← → / A D)** | **旋回 (Turn Left / Right)** | 向きを変更。旋回時のバンク（体の傾き）演出付き。 |
-| **Aボタン / Eキー / Enter** | **インタラクティブ (Interact)** | **対象物を調べる・起動する・飛行機に乗る**。近接時に画面下部にプロンプト表示。 |
-| **Bボタン / Space** | **ジャンプ (Jump)** | 障害物や段差を跳び越えます。**Yダッシュ＋Bジャンプ（任天堂スタイル）** で快適に飛翔。 |
-| **Yボタン / Shift** | **ダッシュ (Sprint)** | 高速ダッシュ移動。 |
-| **RBボタン / Fキー** | **弾丸発射 (Shoot)** | 前方にエナジー弾を発射！赤い破壊可能ターゲットに命中させると粉砕爆発します。 |
-| **LBボタン / Qキー** | **180°クイックターン (Quick Turn)** | スティックのない携帯機で真後ろを即座に向き直せる快適機能。 |
-| **Startボタン / Esc / Pキー** | **設定メニュー (Settings Menu)** | 旋回感度・カメラ追従速度を調整する設定画面を開閉（ポーズ機能付き）。 |
-| **Selectボタン / Rキー** | **リセット / リスポーン (Reset)** | 初期位置に戻ります（落下時も自動復帰）。 |
+| ドキュメント | 概要 |
+|---|---|
+| **[🏠 Wiki トップページ](https://github.com/u1e2k/rg-rotate-3d-test/wiki)** | ハードウェア仕様一覧と全体概要 |
+| **[🕹️ 入力・操作設計ガイド](https://github.com/u1e2k/rg-rotate-3d-test/wiki/Controls-and-Keybindings)** | スティックレス 3D 操作設計、Y ダッシュ＋B ジャンプ、180°クイックターン、誤動作防止 |
+| **[⚡ 60 FPS パフォーマンス最適化](https://github.com/u1e2k/rg-rotate-3d-test/wiki/Performance-and-60FPS-Tuning)** | Mali-G52 向け `gl_compatibility` (GLES3) 最適化、Glow 無効化、Filmic Tonemap |
+| **[🎮 Godot 物理ボタン対応表](https://github.com/u1e2k/rg-rotate-3d-test/wiki/Godot-Button-Mapping)** | 実機キーと Godot 4 Joypad Index 完全対応表（`Start = 6` の罠、LB/RB） |
+| **[🧩 ゲーム機能・アーキテクチャ](https://github.com/u1e2k/rg-rotate-3d-test/wiki/Game-Features-and-Architecture)** | 汎用 Interactable 設計、飛行機（Airplane）の 3D 物理、プロシージャル音響 |
+| **[🤖 Android ビルド & ADB 手順](https://github.com/u1e2k/rg-rotate-3d-test/wiki/Android-Build-and-ADB-Workflow)** | ヘッドレスビルド、ADB 自動転送・起動、logcat リアルタイムデバッグ |
 
 ---
 
-### ✈️ 飛行機搭乗時（フライトモード）
-Aボタンで飛行機に搭乗すると、HUDと操作体系がシームレスに飛行機専用フライトモードへ切り替わります。
+## 🎮 クイック操作リファレンス (Quick Controls)
+
+### 通常時（徒歩モード）
+- **十字キー (D-Pad)**: 前進・後退・左右旋回（カメラ自動追従）
+- **Aボタン**: インタラクティブ（話す / 端末起動 / 飛行機に乗る）
+- **Bボタン**: ジャンプ（Y ボタン同時押しでダッシュジャンプ）
+- **Yボタン**: ダッシュ移動（Sprint）
+- **RBボタン**: 弾丸発射（赤い標的ブロックを破壊可能）
+- **LBボタン**: 180° クイックターン（瞬時に真後ろを向く）
+- **Startボタン**: ポーズ設定メニュー（旋回感度・カメラ速度調整）
+- **Selectボタン**: リセット / 初期位置へリスポーン
 
 <p align="center">
   <img src="docs/images/screenshot_airplane.png" width="460" alt="Airplane Flight Mode" />
   <br />
-  <em>RG Rotate 実機での飛行機操縦画面（60 FPS）</em>
+  <em>飛行機搭乗時の 3D フライト操縦画面</em>
 </p>
 
-| ボタン / キー | 動作 | 説明 |
-|---|---|---|
-| **十字キー 上 (▲ / ↑)** | **降下 (Dive / Pitch Down)** | 機首を下げてダイブ降下。 |
-| **十字キー 下 (▼ / ↓)** | **上昇 (Climb / Pitch Up)** | 機首を上げて大空へ上昇。 |
-| **十字キー 左右 (◀ ▶ / ← →)** | **旋回＆ロール (Yaw & Roll)** | 機体をバンク（傾斜）させながらスムーズに3D旋回。 |
-| **Yボタン / Shift** | **フルスロットル加速 (Boost)** | プロペラ超高速回転＆アフターバーナー加速。 |
-| **Bボタン / Space** | **減速 / エアブレーキ (Brake)** | 低速飛行・着陸アプローチ。 |
-| **RBボタン / Fキー** | **2連装ブラスター (Twin Cannons)** | 左右の主翼からツインエナジー弾を発射！空中標的を狙撃可能。 |
-| **Aボタン / Eキー / Enter** | **降機 (Dismount)** | 飛行機から降りて地上モードへ戻ります。 |
-
----
-
-## 📱 RG Rotate 向け設計ポイント
-
-1. **720 × 720 正方形解像度**
-   - 画面比率 1:1 に最適化されたHUDおよびカメラFOV設計。
-   - スイベル構造（画面回転）時にも綺麗に収まるレスポンシブなUIレイアウト。
-2. **物理十字キー（D-Pad）専用チューニング**
-   - 上下キーで直感的な前進・後退。
-   - 左右キーで適切な旋回速度（滑らかな回転補間）を適用。
-   - 画面背後から滑らかに追従する三人称カメラ（SpringArm3D + ダンピング補間）により、右スティックでの視点操作を一切必要としません。
-3. **独立した1対1入力インジケーター**
-   - 画面下部に **入力インジケーター（▲▼◀▶ [A][B][X][Y][LB][RB]）** を配置。各物理ボタンの押下状態がリアルタイムに明るく点灯します。
-4. **インタラクティブ・オブジェクト (Terminal)**
-   - Aボタンで電源起動・停止をトグル。ホログラフィックコアの回転速度変化、パルス光、プロシージャル効果音を実装。
-5. **乗り物：飛行機 (Airplane)**
-   - 専用の滑走路（Runway）とエアロバティック戦闘機。
-   - 上空には飛行機専用の空中標的（Aerial Targets）を配置。
-6. **3D物理・プラットフォームの動作テスト要素**
-   - **高台と階段**: 床面から高台（高さ2.5m）へ5段で正確に接続された階段昇降テスト。
-   - **スロープ（坂道）**: 床面から高台へ滑らかに登れる傾斜路。
-   - **飛び石（フラット円柱）**: 安定して飛び乗れる3本の足場。
-   - **動くリフト (Moving Platform)**: 高台から奥の離れ小島へ移動するリフト。
-   - **押せる物理ブロック (RigidBody3D)**: 体当たりや射撃で吹き飛ぶブロックタワー。
-   - **収集クリスタル (8個)**: 各所に配置された回転クリスタル。
-7. **自己完結型プロシージャルサウンド**
-   - 外部音声ファイルへの依存なしに、GDScript内部の `AudioStreamWAV` 合成により、ジャンプ音・コイン取得音・射撃音・着弾音・足音・着地音・エンジン音を生成・再生します。
+### ✈️ 飛行機搭乗時（フライトモード）
+- **十字キー 上 / 下**: 降下（ピッチダウン） / 上昇（ピッチアップ）
+- **十字キー 左右**: 旋回＆バンク（ロール）
+- **Yボタン**: フルスロットル加速（Boost）
+- **Bボタン**: エアブレーキ減速（Brake）
+- **RBボタン**: 2連装ブラスター発射（空中標的狙撃）
+- **Aボタン**: 飛行機から降りる（降機）
 
 ---
 
@@ -92,15 +66,26 @@ Aボタンで飛行機に搭乗すると、HUDと操作体系がシームレス�
 
 ---
 
-## 🚀 起動方法
+## 🚀 ビルド & 実機テスト (Quick Start)
 
-### Windows PCでのテスト実行
+### PC でのプレビュー実行
 ```powershell
-& "C:\Users\user\Downloads\Godot\Godot_v4.7.2-stable_win64_console.exe" --path .
+godot --path .
 ```
 
-### Android (RG Rotate 実機) へのインストール
+### RG Rotate 実機へのビルド & デプロイ (ADB)
 ```powershell
-adb install -r ./build/rg_rotate_3d_test.apk
-adb shell monkey -p com.anbernic.rgrotate.test3d -c android.intent.category.LAUNCHER 1
+# 1. デバッグ APK のビルド
+godot --headless --export-debug "Android" build/rg_rotate_3d_test.apk
+
+# 2. 実機へ転送・インストール
+adb install -r build/rg_rotate_3d_test.apk
+
+# 3. アプリ起動
+adb shell am start -n "com.anbernic.rgrotate.test3d/com.godot.game.GodotApp"
+```
+
+### 実機ログのリアルタイム確認
+```powershell
+adb logcat -s godot:*
 ```
