@@ -21,5 +21,11 @@ mono_crash.*.json
 
 # Export outputs
 *.exe
-# Uncomment if your project does not version PCK files as runtime dependencies.
-# *.pck
+*.apk
+*.aab
+build/
+bin/
+
+# Temporary / OS
+.DS_Store
+Thumbs.db
