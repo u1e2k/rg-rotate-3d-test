@@ -1,7 +1,8 @@
 class_name LauncherHub
-extends Control
+extends Node3D
 
 ## Launcher and Benchmark Mode Selector for ANBERNIC RG Rotate (720x720)
+## Pure Node3D scene with its own dedicated WorldEnvironment and Camera3D to guarantee clean buffer clearing.
 
 const SoundManagerScript = preload("res://scripts/sound_manager.gd")
 const SettingsScript = preload("res://scripts/settings_manager.gd")
@@ -9,28 +10,28 @@ const SettingsScript = preload("res://scripts/settings_manager.gd")
 @onready var sound_manager: Node = $SoundManager
 
 # UI References
-@onready var mode_title_label: Label = $Margin/VBox/CenterCard/Margin/VBox/Header/TitleLabel
-@onready var mode_badge_label: Label = $Margin/VBox/CenterCard/Margin/VBox/Header/BadgePanel/BadgeLabel
-@onready var mode_badge_panel: PanelContainer = $Margin/VBox/CenterCard/Margin/VBox/Header/BadgePanel
-@onready var mode_subtitle_label: Label = $Margin/VBox/CenterCard/Margin/VBox/SubtitleLabel
-@onready var mode_desc_label: Label = $Margin/VBox/CenterCard/Margin/VBox/DescLabel
-@onready var tech_specs_label: Label = $Margin/VBox/CenterCard/Margin/VBox/TechSpecsPanel/Margin/TechSpecsLabel
-@onready var mode_icon_rect: ColorRect = $Margin/VBox/CenterCard/Margin/VBox/IconBox/ColorRect
-@onready var mode_counter_label: Label = $Margin/VBox/NavBar/CounterLabel
-@onready var action_button_label: Label = $Margin/VBox/ActionPrompt/PromptLabel
-@onready var fps_label: Label = $Margin/VBox/TopBar/FpsLabel
+@onready var mode_title_label: Label = $UI/Margin/VBox/CenterCard/Margin/VBox/Header/TitleLabel
+@onready var mode_badge_label: Label = $UI/Margin/VBox/CenterCard/Margin/VBox/Header/BadgePanel/BadgeLabel
+@onready var mode_badge_panel: PanelContainer = $UI/Margin/VBox/CenterCard/Margin/VBox/Header/BadgePanel
+@onready var mode_subtitle_label: Label = $UI/Margin/VBox/CenterCard/Margin/VBox/SubtitleLabel
+@onready var mode_desc_label: Label = $UI/Margin/VBox/CenterCard/Margin/VBox/DescLabel
+@onready var tech_specs_label: Label = $UI/Margin/VBox/CenterCard/Margin/VBox/TechSpecsPanel/Margin/TechSpecsLabel
+@onready var mode_icon_rect: ColorRect = $UI/Margin/VBox/CenterCard/Margin/VBox/IconBox/ColorRect
+@onready var mode_counter_label: Label = $UI/Margin/VBox/NavBar/CounterLabel
+@onready var action_button_label: Label = $UI/Margin/VBox/ActionPrompt/PromptLabel
+@onready var fps_label: Label = $UI/Margin/VBox/TopBar/FpsLabel
 
 # Key Visualizer Indicators
-@onready var key_up: Label = $InputOverlay/Grid/Up
-@onready var key_down: Label = $InputOverlay/Grid/Down
-@onready var key_left: Label = $InputOverlay/Grid/Left
-@onready var key_right: Label = $InputOverlay/Grid/Right
-@onready var key_a: Label = $InputOverlay/Grid/A
-@onready var key_b: Label = $InputOverlay/Grid/B
-@onready var key_x: Label = $InputOverlay/Grid/X
-@onready var key_y: Label = $InputOverlay/Grid/Y
-@onready var key_lb: Label = $InputOverlay/Grid/LB
-@onready var key_rb: Label = $InputOverlay/Grid/RB
+@onready var key_up: Label = $UI/InputOverlay/Grid/Up
+@onready var key_down: Label = $UI/InputOverlay/Grid/Down
+@onready var key_left: Label = $UI/InputOverlay/Grid/Left
+@onready var key_right: Label = $UI/InputOverlay/Grid/Right
+@onready var key_a: Label = $UI/InputOverlay/Grid/A
+@onready var key_b: Label = $UI/InputOverlay/Grid/B
+@onready var key_x: Label = $UI/InputOverlay/Grid/X
+@onready var key_y: Label = $UI/InputOverlay/Grid/Y
+@onready var key_lb: Label = $UI/InputOverlay/Grid/LB
+@onready var key_rb: Label = $UI/InputOverlay/Grid/RB
 
 var modes: Array[Dictionary] = [
 	{
@@ -87,6 +88,8 @@ var current_mode_index: int = 0
 var input_cooldown: float = 0.0
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	get_tree().paused = false # Ensure pause state is cleanly cleared
 	SettingsScript.load_settings()
 	_update_ui()
 	_update_indicators()
@@ -104,20 +107,43 @@ func _input(event: InputEvent) -> void:
 	if input_cooldown > 0.0:
 		return
 		
-	# D-pad navigation
-	if event.is_action_pressed("turn_left") or event.is_action_pressed("ui_left") or event.is_action_pressed("move_backward") or event.is_action_pressed("ui_up"):
+	# D-pad navigation (Supports Action, Key, and explicit Joypad button index)
+	var is_prev = false
+	var is_next = false
+	var is_select = false
+	
+	if event is InputEventJoypadButton and event.pressed:
+		if event.button_index == JOY_BUTTON_DPAD_LEFT or event.button_index == JOY_BUTTON_DPAD_UP:
+			is_prev = true
+		elif event.button_index == JOY_BUTTON_DPAD_RIGHT or event.button_index == JOY_BUTTON_DPAD_DOWN:
+			is_next = true
+		elif event.button_index == JOY_BUTTON_A:
+			is_select = true
+			
+	if not (is_prev or is_next or is_select):
+		if event.is_action_pressed("turn_left") or event.is_action_pressed("ui_left") or event.is_action_pressed("move_backward") or event.is_action_pressed("ui_up"):
+			is_prev = true
+		elif event.is_action_pressed("turn_right") or event.is_action_pressed("ui_right") or event.is_action_pressed("move_forward") or event.is_action_pressed("ui_down"):
+			is_next = true
+		elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+			is_select = true
+			
+	if is_prev:
 		_change_mode(-1)
-		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("turn_right") or event.is_action_pressed("ui_right") or event.is_action_pressed("move_forward") or event.is_action_pressed("ui_down"):
+		var vp = get_viewport()
+		if vp: vp.set_input_as_handled()
+	elif is_next:
 		_change_mode(1)
-		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+		var vp = get_viewport()
+		if vp: vp.set_input_as_handled()
+	elif is_select:
 		_launch_current_mode()
-		get_viewport().set_input_as_handled()
+		var vp = get_viewport()
+		if vp: vp.set_input_as_handled()
 
 func _change_mode(direction: int) -> void:
 	current_mode_index = posmod(current_mode_index + direction, modes.size())
-	input_cooldown = 0.15
+	input_cooldown = 0.18
 	if sound_manager and sound_manager.has_method("play_cursor"):
 		sound_manager.play_cursor()
 	_update_ui()
@@ -167,10 +193,10 @@ func _update_indicators() -> void:
 	var c_active = Color(0.2, 1.0, 0.4, 1.0)
 	var c_dim = Color(1.0, 1.0, 1.0, 0.25)
 	
-	_set_key_state(key_up, Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"), c_active, c_dim)
-	_set_key_state(key_down, Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"), c_active, c_dim)
-	_set_key_state(key_left, Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"), c_active, c_dim)
-	_set_key_state(key_right, Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"), c_active, c_dim)
+	_set_key_state(key_up, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_UP) or Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"), c_active, c_dim)
+	_set_key_state(key_down, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_DOWN) or Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"), c_active, c_dim)
+	_set_key_state(key_left, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_LEFT) or Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"), c_active, c_dim)
+	_set_key_state(key_right, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_RIGHT) or Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"), c_active, c_dim)
 	
 	# Dedicated Joypad Button Query to prevent crosstalk
 	var joy_a = Input.is_joy_button_pressed(0, JOY_BUTTON_A) or Input.is_key_pressed(KEY_E) or Input.is_key_pressed(KEY_ENTER)

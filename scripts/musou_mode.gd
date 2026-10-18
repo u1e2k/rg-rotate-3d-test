@@ -42,6 +42,7 @@ var combo_timer: float = 0.0
 var is_menu_open: bool = false
 var menu_items: Array[Control] = []
 var current_menu_index: int = 0
+var menu_cooldown: float = 0.0
 var input_suppress_timer: float = 0.0
 
 func _ready() -> void:
@@ -62,20 +63,37 @@ func _ready() -> void:
 	hit_banner.visible = false
 
 func _setup_settings_ui() -> void:
+	settings_menu.process_mode = Node.PROCESS_MODE_ALWAYS
 	menu_items = [turn_slider, close_btn, exit_hub_btn]
+	
 	turn_slider.value = SettingsScript.turn_sensitivity
-	turn_value_label.text = "%.1f" % turn_slider.value
+	_update_turn_label(turn_slider.value)
 	turn_slider.value_changed.connect(func(val):
 		SettingsScript.turn_sensitivity = val
-		turn_value_label.text = "%.1f" % val
+		_update_turn_label(val)
 		SettingsScript.save_settings()
+		if player and player.has_method("apply_settings"):
+			player.apply_settings()
 	)
 	close_btn.pressed.connect(toggle_settings_menu)
 	exit_hub_btn.pressed.connect(_on_exit_to_hub_pressed)
 
+func _update_turn_label(val: float) -> void:
+	var desc = ""
+	if val < 2.0:
+		desc = " (遅)"
+	elif val > 3.6:
+		desc = " (速)"
+	else:
+		desc = " (標準)"
+	turn_value_label.text = "%.1f%s" % [val, desc]
+
 func _process(delta: float) -> void:
 	fps_label.text = "%d FPS" % Engine.get_frames_per_second()
 	
+	if menu_cooldown > 0.0:
+		menu_cooldown -= delta
+		
 	if input_suppress_timer > 0.0:
 		input_suppress_timer -= delta
 		
@@ -87,62 +105,145 @@ func _process(delta: float) -> void:
 			
 	_update_indicators()
 
+func _safe_handle_input() -> void:
+	var vp = get_viewport()
+	if vp:
+		vp.set_input_as_handled()
+
 func _input(event: InputEvent) -> void:
+	# Check Start Button explicitly for RG Rotate (JOY_BUTTON_START = 6)
+	var is_start_press = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_START and event.pressed:
+		is_start_press = true
+	elif event.is_action_pressed("toggle_menu"):
+		is_start_press = true
+		
 	if not is_menu_open:
-		if event.is_action_pressed("toggle_menu"):
-			get_viewport().set_input_as_handled()
+		if is_start_press:
+			_safe_handle_input()
 			toggle_settings_menu()
 		return
 		
-	# Menu is OPEN
-	if event.is_action_pressed("toggle_menu") or event.is_action_pressed("ui_cancel"):
-		get_viewport().set_input_as_handled()
+	# --- Menu is OPEN ---
+	if menu_cooldown > 0.0:
+		return
+		
+	# B Button or Start Button or Esc closes the menu
+	var is_cancel_or_start = is_start_press
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_B and event.pressed:
+		is_cancel_or_start = true
+	elif event.is_action_pressed("ui_cancel"):
+		is_cancel_or_start = true
+		
+	if is_cancel_or_start:
+		_safe_handle_input()
 		toggle_settings_menu()
 		return
 		
-	if event.is_action_pressed("ui_down"):
+	# Navigation Down (D-Pad Down or ui_down)
+	var is_down = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_DPAD_DOWN and event.pressed:
+		is_down = true
+	elif event.is_action_pressed("ui_down") or event.is_action_pressed("move_backward"):
+		is_down = true
+		
+	if is_down:
+		_safe_handle_input()
 		current_menu_index = (current_menu_index + 1) % menu_items.size()
-		menu_items[current_menu_index].grab_focus()
-		get_viewport().set_input_as_handled()
+		_highlight_menu_item()
+		menu_cooldown = 0.15
+		var sm = SoundManagerScript.get_instance()
+		if sm and sm.has_method("play_cursor"):
+			sm.play_cursor()
 		return
 		
-	if event.is_action_pressed("ui_up"):
+	# Navigation Up (D-Pad Up or ui_up)
+	var is_up = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_DPAD_UP and event.pressed:
+		is_up = true
+	elif event.is_action_pressed("ui_up") or event.is_action_pressed("move_forward"):
+		is_up = true
+		
+	if is_up:
+		_safe_handle_input()
 		current_menu_index = (current_menu_index - 1 + menu_items.size()) % menu_items.size()
-		menu_items[current_menu_index].grab_focus()
-		get_viewport().set_input_as_handled()
+		_highlight_menu_item()
+		menu_cooldown = 0.15
+		var sm = SoundManagerScript.get_instance()
+		if sm and sm.has_method("play_cursor"):
+			sm.play_cursor()
 		return
 		
-	if event.is_action_pressed("ui_accept"):
-		if current_menu_index == 1:
-			get_viewport().set_input_as_handled()
-			toggle_settings_menu()
-		elif current_menu_index == 2:
-			get_viewport().set_input_as_handled()
-			_on_exit_to_hub_pressed()
-		return
+	# Slider Adjust Left (D-Pad Left or ui_left)
+	var is_left = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_DPAD_LEFT and event.pressed:
+		is_left = true
+	elif event.is_action_pressed("ui_left") or event.is_action_pressed("turn_left"):
+		is_left = true
 		
-	if event.is_action_pressed("ui_left"):
+	if is_left:
 		if current_menu_index == 0:
 			turn_slider.value = clampf(turn_slider.value - turn_slider.step, turn_slider.min_value, turn_slider.max_value)
-			get_viewport().set_input_as_handled()
+			menu_cooldown = 0.1
+			_safe_handle_input()
 		return
 		
-	if event.is_action_pressed("ui_right"):
+	# Slider Adjust Right (D-Pad Right or ui_right)
+	var is_right = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_DPAD_RIGHT and event.pressed:
+		is_right = true
+	elif event.is_action_pressed("ui_right") or event.is_action_pressed("turn_right"):
+		is_right = true
+		
+	if is_right:
 		if current_menu_index == 0:
 			turn_slider.value = clampf(turn_slider.value + turn_slider.step, turn_slider.min_value, turn_slider.max_value)
-			get_viewport().set_input_as_handled()
+			menu_cooldown = 0.1
+			_safe_handle_input()
 		return
+		
+	# Accept / Activate (A Button or Enter or Space)
+	var is_accept = false
+	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_A and event.pressed:
+		is_accept = true
+	elif event.is_action_pressed("ui_accept") or event.is_action_pressed("interact"):
+		is_accept = true
+		
+	if is_accept:
+		_safe_handle_input()
+		if current_menu_index == 1:
+			toggle_settings_menu()
+		elif current_menu_index == 2:
+			_on_exit_to_hub_pressed()
+		return
+
+func _highlight_menu_item() -> void:
+	for i in range(menu_items.size()):
+		var item = menu_items[i]
+		if i == current_menu_index:
+			item.grab_focus()
+			item.modulate = Color(1.2, 1.2, 1.0, 1.0)
+		else:
+			item.modulate = Color(1.0, 1.0, 1.0, 0.8)
 
 func toggle_settings_menu() -> void:
 	is_menu_open = !is_menu_open
 	settings_menu.visible = is_menu_open
 	get_tree().paused = is_menu_open
+	menu_cooldown = 0.2
 	
+	var sm = SoundManagerScript.get_instance()
+	if sm and sm.has_method("play_cursor"):
+		sm.play_cursor()
+		
 	if is_menu_open:
 		current_menu_index = 0
-		menu_items[current_menu_index].grab_focus()
+		_highlight_menu_item()
 	else:
 		input_suppress_timer = 0.3
+		SettingsScript.save_settings()
+		if player and player.has_method("apply_settings"):
+			player.apply_settings()
 
 func _on_exit_to_hub_pressed() -> void:
 	get_tree().paused = false
@@ -189,10 +290,10 @@ func _update_indicators() -> void:
 	var c_active = Color(0.2, 1.0, 0.4, 1.0)
 	var c_dim = Color(1.0, 1.0, 1.0, 0.25)
 	
-	_set_key_state(key_up, Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"), c_active, c_dim)
-	_set_key_state(key_down, Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"), c_active, c_dim)
-	_set_key_state(key_left, Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"), c_active, c_dim)
-	_set_key_state(key_right, Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"), c_active, c_dim)
+	_set_key_state(key_up, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_UP) or Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"), c_active, c_dim)
+	_set_key_state(key_down, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_DOWN) or Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"), c_active, c_dim)
+	_set_key_state(key_left, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_LEFT) or Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"), c_active, c_dim)
+	_set_key_state(key_right, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_RIGHT) or Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"), c_active, c_dim)
 	
 	var joy_a = Input.is_joy_button_pressed(0, JOY_BUTTON_A) or Input.is_key_pressed(KEY_E)
 	var joy_b = Input.is_joy_button_pressed(0, JOY_BUTTON_B) or Input.is_key_pressed(KEY_SPACE)
