@@ -43,6 +43,10 @@ func _on_body_entered(body: Node3D) -> void:
 		var impulse_dir = (direction + Vector3(0, 0.35, 0)).normalized()
 		body.apply_central_impulse(impulse_dir * 22.0)
 		
+	# Damage destructible targets
+	if body.has_method("take_damage"):
+		body.take_damage(1)
+		
 	# Quick flash and burst animation
 	var tween = create_tween().set_parallel(true)
 	tween.tween_property(mesh, "scale", Vector3(2.5, 2.5, 2.5), 0.1)

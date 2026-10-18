@@ -184,16 +184,19 @@ func _process(delta: float) -> void:
 	_update_input_overlay()
 
 func _update_input_overlay() -> void:
-	_set_key_active(key_up, Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"))
-	_set_key_active(key_down, Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"))
-	_set_key_active(key_left, Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"))
-	_set_key_active(key_right, Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"))
-	_set_key_active(key_a, Input.is_action_pressed("jump"))
-	_set_key_active(key_b, Input.is_action_pressed("sprint"))
-	_set_key_active(key_x, Input.is_joy_button_pressed(0, 2))
-	_set_key_active(key_y, Input.is_action_pressed("shoot"))
-	_set_key_active(key_lb, Input.is_action_pressed("quick_turn"))
-	_set_key_active(key_rb, Input.is_action_pressed("shoot") and Input.is_joy_button_pressed(0, 10))
+	# Direction buttons (1-to-1)
+	_set_key_active(key_up, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_UP) or Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W))
+	_set_key_active(key_down, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_DOWN) or Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S))
+	_set_key_active(key_left, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_LEFT) or Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A))
+	_set_key_active(key_right, Input.is_joy_button_pressed(0, JOY_BUTTON_DPAD_RIGHT) or Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D))
+	
+	# Action buttons (strictly 1-to-1, completely isolated!)
+	_set_key_active(key_a, Input.is_joy_button_pressed(0, JOY_BUTTON_A) or Input.is_key_pressed(KEY_SPACE))
+	_set_key_active(key_b, Input.is_joy_button_pressed(0, JOY_BUTTON_B) or Input.is_key_pressed(KEY_SHIFT))
+	_set_key_active(key_x, Input.is_joy_button_pressed(0, JOY_BUTTON_X) or Input.is_key_pressed(KEY_X))
+	_set_key_active(key_y, Input.is_joy_button_pressed(0, JOY_BUTTON_Y) or Input.is_key_pressed(KEY_C))
+	_set_key_active(key_lb, Input.is_joy_button_pressed(0, JOY_BUTTON_LEFT_SHOULDER) or Input.is_key_pressed(KEY_Q))
+	_set_key_active(key_rb, Input.is_joy_button_pressed(0, JOY_BUTTON_RIGHT_SHOULDER) or Input.is_key_pressed(KEY_F) or Input.is_key_pressed(KEY_E))
 
 func _set_key_active(label: Label, is_active: bool) -> void:
 	if is_active:

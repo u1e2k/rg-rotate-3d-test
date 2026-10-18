@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="3_player"]
 [ext_resource type="PackedScene" path="res://scenes/collectible.tscn" id="4_gem"]
 [ext_resource type="PackedScene" path="res://scenes/moving_platform.tscn" id="5_platform"]
+[ext_resource type="PackedScene" path="res://scenes/destructible_target.tscn" id="6_target"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.24, 0.48, 0.88, 1)
@@ -22,9 +23,7 @@ ambient_light_source = 2
 ambient_light_color = Color(0.6, 0.65, 0.75, 1)
 ambient_light_energy = 0.8
 tonemap_mode = 2
-glow_enabled = true
-glow_bloom = 0.2
-glow_blend_mode = 1
+glow_enabled = false
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.22, 0.25, 0.32, 1)
@@ -362,6 +361,17 @@ mesh = SubResource("BoxMesh_Physics")
 [node name="Col" type="CollisionShape3D" parent="Environment/PhysicsBoxes/Box3"]
 shape = SubResource("BoxShape_Physics")
 
+[node name="Targets" type="Node3D" parent="Environment"]
+
+[node name="Target1" parent="Environment/Targets" instance=ExtResource("6_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 1.5)
+
+[node name="Target2" parent="Environment/Targets" instance=ExtResource("6_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.5, -6)
+
+[node name="Target3" parent="Environment/Targets" instance=ExtResource("6_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 1.5)
+
 [node name="Collectibles" type="Node3D" parent="Environment"]
 
 [node name="Gem1" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
@@ -496,7 +506,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 13
-text = "[A/B] ジャンプ　[B/X] ダッシュ　[Y/RB] 射撃　[LB] 180°反転　[Start] 設定"
+text = "[A/B] ジャンプ　[Y/B] ダッシュ　[RB] 射撃　[LB] 180°反転　[Start] 設定"
 horizontal_alignment = 1
 
 [node name="InputOverlay" type="PanelContainer" parent="HUD"]
