@@ -81,6 +81,18 @@ var modes: Array[Dictionary] = [
 		"scene": "res://scenes/openworld_mode.tscn",
 		"playable": true,
 		"theme_color": Color(0.20, 0.80, 0.45)
+	},
+	{
+		"id": "dungeon",
+		"title": "5. Dungeon & Boss Battle",
+		"badge": "PLAYABLE (60 FPS)",
+		"badge_color": Color(0.95, 0.25, 0.25),
+		"subtitle": "閉鎖空間・動的光源 & 巨大ゴーレム",
+		"desc": "石造りダンジョン回廊での動的光源ストレステスト、Z注目ロックオン、緊急ステップ回避、予兆衝撃波を放つ巨大ボスAI。",
+		"tech": "・視点: Z注目ロックオン & 自動追従\n・回避: 無敵フレーム付きステップダッシュ\n・光源: 2灯(最適化) / 6灯(ストレステスト)\n・ボス: 予兆モーション & 衝撃波リング",
+		"scene": "res://scenes/dungeon_mode.tscn",
+		"playable": true,
+		"theme_color": Color(0.95, 0.25, 0.25)
 	}
 ]
 

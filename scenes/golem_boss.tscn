@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://golemboss3d"]
+
+[ext_resource type="Script" path="res://scripts/golem_boss.gd" id="1_script"]
+
+[node name="GolemBoss" type="CharacterBody3D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_script")
