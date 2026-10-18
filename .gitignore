@@ -26,6 +26,10 @@ mono_crash.*.json
 build/
 bin/
 
+# Screenshots (ignore root captures and their import files, keep docs/images)
+/screenshot*.png
+/screenshot*.import
+
 # Temporary / OS
 .DS_Store
 Thumbs.db

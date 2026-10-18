@@ -32,6 +32,7 @@ const BulletScene = preload("res://scenes/bullet.tscn")
 var anim_time: float = 0.0
 var step_timer: float = 0.0
 var shoot_cooldown_timer: float = 0.0
+var input_suppress_timer: float = 0.0
 var target_tilt_z: float = 0.0
 var current_tilt_z: float = 0.0
 var is_turning_180: bool = false
@@ -41,6 +42,11 @@ var quick_turn_target_yaw: float = 0.0
 var was_on_floor_last: bool = true
 var spawn_position: Vector3 = Vector3(0, 1.5, 0)
 var spawn_rotation: float = 0.0
+
+func suppress_input(duration: float = 0.25) -> void:
+	input_suppress_timer = duration
+	velocity.x = 0.0
+	velocity.z = 0.0
 
 func _ready() -> void:
 	SettingsScript.load_settings()
@@ -60,6 +66,14 @@ func _physics_process(delta: float) -> void:
 	# Fall reset check
 	if global_position.y < -15.0:
 		respawn()
+		return
+
+	# Decrement input suppression timer
+	if input_suppress_timer > 0.0:
+		input_suppress_timer -= delta
+		move_and_slide()
+		_update_camera(delta)
+		_update_procedural_animation(delta)
 		return
 
 	# Gravity

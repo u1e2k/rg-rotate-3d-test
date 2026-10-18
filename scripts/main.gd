@@ -7,10 +7,22 @@ const SettingsScript = preload("res://scripts/settings_manager.gd")
 @onready var sound_manager: Node = $SoundManager
 @onready var hud_gem_label: Label = $HUD/MarginContainer/TopBar/GemBox/HBox/GemLabel
 @onready var hud_time_label: Label = $HUD/MarginContainer/TopBar/TimeBox/HBox/TimeLabel
-@onready var hud_fps_label: Label = $HUD/MarginContainer/TopBar/FpsLabel
+@onready var hud_fps_label: Label = $HUD/MarginContainer/TopBar/FpsBox/HBox/FpsLabel
 @onready var clear_banner: Control = $HUD/ClearBanner
 @onready var player: Node3D = $Player
 @onready var collectibles_container: Node3D = $Environment/Collectibles
+
+# Input visualizer indicators
+@onready var key_up: Label = $HUD/InputOverlay/Grid/Up
+@onready var key_down: Label = $HUD/InputOverlay/Grid/Down
+@onready var key_left: Label = $HUD/InputOverlay/Grid/Left
+@onready var key_right: Label = $HUD/InputOverlay/Grid/Right
+@onready var key_a: Label = $HUD/InputOverlay/Grid/A
+@onready var key_b: Label = $HUD/InputOverlay/Grid/B
+@onready var key_x: Label = $HUD/InputOverlay/Grid/X
+@onready var key_y: Label = $HUD/InputOverlay/Grid/Y
+@onready var key_lb: Label = $HUD/InputOverlay/Grid/LB
+@onready var key_rb: Label = $HUD/InputOverlay/Grid/RB
 
 # Settings Menu references
 @onready var settings_menu: Control = $HUD/SettingsMenu
@@ -26,12 +38,10 @@ var elapsed_time: float = 0.0
 var is_cleared: bool = false
 var is_menu_open: bool = false
 
-# Array of focusable controls in menu
 var menu_items: Array[Control] = []
 var current_menu_index: int = 0
 
 func _ready() -> void:
-	# Main scene handles input ALWAYS, even when paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	SettingsScript.load_settings()
@@ -61,14 +71,14 @@ func _setup_settings_ui() -> void:
 func _input(event: InputEvent) -> void:
 	if not is_menu_open:
 		if event.is_action_pressed("toggle_menu"):
-			toggle_settings_menu()
 			get_viewport().set_input_as_handled()
+			toggle_settings_menu()
 		return
 		
-	# Menu is OPEN: explicitly handle all physical buttons to guarantee 100% responsiveness
+	# Menu is OPEN
 	if event.is_action_pressed("toggle_menu") or event.is_action_pressed("ui_cancel"):
-		toggle_settings_menu()
 		get_viewport().set_input_as_handled()
+		toggle_settings_menu()
 		return
 		
 	if event.is_action_pressed("ui_down"):
@@ -90,9 +100,9 @@ func _input(event: InputEvent) -> void:
 		return
 		
 	if event.is_action_pressed("ui_accept"):
-		if current_menu_index == 2: # Close button
-			toggle_settings_menu()
+		if current_menu_index == 2:
 			get_viewport().set_input_as_handled()
+			toggle_settings_menu()
 		return
 		
 	if event.is_action_pressed("ui_left"):
@@ -129,6 +139,8 @@ func toggle_settings_menu() -> void:
 		SettingsScript.save_settings()
 		if player and player.has_method("apply_settings"):
 			player.apply_settings()
+		if player and player.has_method("suppress_input"):
+			player.suppress_input(0.3)
 
 func _on_turn_slider_changed(value: float) -> void:
 	SettingsScript.turn_sensitivity = value
@@ -165,7 +177,29 @@ func _process(delta: float) -> void:
 		var msec = int((elapsed_time - int(elapsed_time)) * 10)
 		hud_time_label.text = "%02d:%02d.%d" % [minutes, seconds, msec]
 	
+	# High visibility FPS display
 	hud_fps_label.text = "%d FPS" % Engine.get_frames_per_second()
+	
+	# Update input visualizer
+	_update_input_overlay()
+
+func _update_input_overlay() -> void:
+	_set_key_active(key_up, Input.is_action_pressed("move_forward") or Input.is_action_pressed("ui_up"))
+	_set_key_active(key_down, Input.is_action_pressed("move_backward") or Input.is_action_pressed("ui_down"))
+	_set_key_active(key_left, Input.is_action_pressed("turn_left") or Input.is_action_pressed("ui_left"))
+	_set_key_active(key_right, Input.is_action_pressed("turn_right") or Input.is_action_pressed("ui_right"))
+	_set_key_active(key_a, Input.is_action_pressed("jump"))
+	_set_key_active(key_b, Input.is_action_pressed("sprint"))
+	_set_key_active(key_x, Input.is_joy_button_pressed(0, 2))
+	_set_key_active(key_y, Input.is_action_pressed("shoot"))
+	_set_key_active(key_lb, Input.is_action_pressed("quick_turn"))
+	_set_key_active(key_rb, Input.is_action_pressed("shoot") and Input.is_joy_button_pressed(0, 10))
+
+func _set_key_active(label: Label, is_active: bool) -> void:
+	if is_active:
+		label.modulate = Color(0.2, 0.95, 1.0, 1.0)
+	else:
+		label.modulate = Color(1.0, 1.0, 1.0, 0.28)
 
 func _on_gem_collected() -> void:
 	collected_gems += 1

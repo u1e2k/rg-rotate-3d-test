@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://main3dscene720"]
+[gd_scene load_steps=33 format=3 uid="uid://main3dscene720"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
@@ -30,14 +30,14 @@ glow_blend_mode = 1
 albedo_color = Color(0.22, 0.25, 0.32, 1)
 metallic = 0.1
 roughness = 0.8
-uv1_scale = Vector3(12, 12, 1)
+uv1_scale = Vector3(16, 16, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_Floor"]
 material = SubResource("Mat_Floor")
-size = Vector3(28, 1, 28)
+size = Vector3(34, 1, 34)
 
 [sub_resource type="BoxShape3D" id="BoxShape_Floor"]
-size = Vector3(28, 1, 28)
+size = Vector3(34, 1, 34)
 
 [sub_resource type="StandardMaterial3D" id="Mat_HighFloor"]
 albedo_color = Color(0.3, 0.38, 0.52, 1)
@@ -46,10 +46,17 @@ roughness = 0.6
 
 [sub_resource type="BoxMesh" id="BoxMesh_Upper"]
 material = SubResource("Mat_HighFloor")
-size = Vector3(12, 1, 10)
+size = Vector3(14, 1, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape_Upper"]
-size = Vector3(12, 1, 10)
+size = Vector3(14, 1, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Island"]
+material = SubResource("Mat_HighFloor")
+size = Vector3(6, 1, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape_Island"]
+size = Vector3(6, 1, 6)
 
 [sub_resource type="StandardMaterial3D" id="Mat_Slope"]
 albedo_color = Color(0.25, 0.45, 0.4, 1)
@@ -57,10 +64,10 @@ roughness = 0.7
 
 [sub_resource type="BoxMesh" id="BoxMesh_Slope"]
 material = SubResource("Mat_Slope")
-size = Vector3(4, 0.5, 8.5)
+size = Vector3(3.5, 0.4, 8.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape_Slope"]
-size = Vector3(4, 0.5, 8.5)
+size = Vector3(3.5, 0.4, 8.4)
 
 [sub_resource type="StandardMaterial3D" id="Mat_Pillar"]
 albedo_color = Color(0.75, 0.35, 0.25, 1)
@@ -69,36 +76,35 @@ roughness = 0.4
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_Pillar"]
 material = SubResource("Mat_Pillar")
-top_radius = 1.0
-bottom_radius = 1.0
+top_radius = 1.3
+bottom_radius = 1.3
 height = 2.0
 
-[sub_resource type="CylinderShape3D" id="CylinderShape_Pillar"]
-top_radius = 1.0
-bottom_radius = 1.0
-height = 2.0
+[sub_resource type="BoxShape3D" id="BoxShape_PillarFlat"]
+size = Vector3(2.5, 2.0, 2.5)
 
 [sub_resource type="StandardMaterial3D" id="Mat_Stair"]
-albedo_color = Color(0.35, 0.4, 0.5, 1)
+albedo_color = Color(0.35, 0.42, 0.55, 1)
+roughness = 0.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_Step"]
 material = SubResource("Mat_Stair")
-size = Vector3(3, 0.4, 0.8)
+size = Vector3(4.0, 0.5, 0.8)
 
 [sub_resource type="BoxShape3D" id="BoxShape_Step"]
-size = Vector3(3, 0.4, 0.8)
+size = Vector3(4.0, 0.5, 0.8)
 
 [sub_resource type="StandardMaterial3D" id="Mat_PhysicsBox"]
-albedo_color = Color(0.9, 0.4, 0.2, 1)
+albedo_color = Color(0.95, 0.45, 0.2, 1)
 metallic = 0.2
-roughness = 0.5
+roughness = 0.4
 
 [sub_resource type="BoxMesh" id="BoxMesh_Physics"]
 material = SubResource("Mat_PhysicsBox")
-size = Vector3(1.0, 1.0, 1.0)
+size = Vector3(0.9, 0.9, 0.9)
 
 [sub_resource type="BoxShape3D" id="BoxShape_Physics"]
-size = Vector3(1.0, 1.0, 1.0)
+size = Vector3(0.9, 0.9, 0.9)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_HUDPanel"]
 bg_color = Color(0.08, 0.09, 0.14, 0.75)
@@ -188,7 +194,8 @@ directional_shadow_max_distance = 60.0
 script = ExtResource("2_sound")
 
 [node name="Player" parent="." instance=ExtResource("3_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 4)
+process_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 5.5)
 
 [node name="Environment" type="Node3D" parent="."]
 
@@ -204,7 +211,7 @@ mesh = SubResource("BoxMesh_Floor")
 shape = SubResource("BoxShape_Floor")
 
 [node name="UpperDeck" type="StaticBody3D" parent="Environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.5, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, -8)
 collision_layer = 1
 collision_mask = 3
 
@@ -214,8 +221,19 @@ mesh = SubResource("BoxMesh_Upper")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/UpperDeck"]
 shape = SubResource("BoxShape_Upper")
 
+[node name="Island" type="StaticBody3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, -22)
+collision_layer = 1
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Island"]
+mesh = SubResource("BoxMesh_Island")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Island"]
+shape = SubResource("BoxShape_Island")
+
 [node name="Slope" type="StaticBody3D" parent="Environment"]
-transform = Transform3D(1, 0, 0, 0, 0.927184, 0.374607, 0, -0.374607, 0.927184, -9, 1.25, 0.5)
+transform = Transform3D(1, 0, 0, 0, 0.9545, -0.2982, 0, 0.2982, 0.9545, -8.75, 1.25, -2.0)
 collision_layer = 1
 collision_mask = 3
 
@@ -226,10 +244,9 @@ mesh = SubResource("BoxMesh_Slope")
 shape = SubResource("BoxShape_Slope")
 
 [node name="Stairs" type="Node3D" parent="Environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1.5)
 
 [node name="Step1" type="StaticBody3D" parent="Environment/Stairs"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0.6)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Stairs/Step1"]
 mesh = SubResource("BoxMesh_Step")
@@ -238,7 +255,7 @@ mesh = SubResource("BoxMesh_Step")
 shape = SubResource("BoxShape_Step")
 
 [node name="Step2" type="StaticBody3D" parent="Environment/Stairs"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.2)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Stairs/Step2"]
 mesh = SubResource("BoxMesh_Step")
@@ -247,7 +264,7 @@ mesh = SubResource("BoxMesh_Step")
 shape = SubResource("BoxShape_Step")
 
 [node name="Step3" type="StaticBody3D" parent="Environment/Stairs"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -1.0)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Stairs/Step3"]
 mesh = SubResource("BoxMesh_Step")
@@ -256,7 +273,7 @@ mesh = SubResource("BoxMesh_Step")
 shape = SubResource("BoxShape_Step")
 
 [node name="Step4" type="StaticBody3D" parent="Environment/Stairs"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -2.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, -1.8)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Stairs/Step4"]
 mesh = SubResource("BoxMesh_Step")
@@ -265,7 +282,7 @@ mesh = SubResource("BoxMesh_Step")
 shape = SubResource("BoxShape_Step")
 
 [node name="Step5" type="StaticBody3D" parent="Environment/Stairs"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -2.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, -2.6)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Stairs/Step5"]
 mesh = SubResource("BoxMesh_Step")
@@ -276,44 +293,44 @@ shape = SubResource("BoxShape_Step")
 [node name="Pillars" type="Node3D" parent="Environment"]
 
 [node name="Pillar1" type="StaticBody3D" parent="Environment/Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 1.0, -4.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Pillars/Pillar1"]
 mesh = SubResource("CylinderMesh_Pillar")
 
 [node name="Col" type="CollisionShape3D" parent="Environment/Pillars/Pillar1"]
-shape = SubResource("CylinderShape_Pillar")
+shape = SubResource("BoxShape_PillarFlat")
 
 [node name="Pillar2" type="StaticBody3D" parent="Environment/Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 1.6, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 1.25, -0.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Pillars/Pillar2"]
 mesh = SubResource("CylinderMesh_Pillar")
 
 [node name="Col" type="CollisionShape3D" parent="Environment/Pillars/Pillar2"]
-shape = SubResource("CylinderShape_Pillar")
+shape = SubResource("BoxShape_PillarFlat")
 
 [node name="Pillar3" type="StaticBody3D" parent="Environment/Pillars"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 2.2, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 1.5, 3.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Pillars/Pillar3"]
 mesh = SubResource("CylinderMesh_Pillar")
 
 [node name="Col" type="CollisionShape3D" parent="Environment/Pillars/Pillar3"]
-shape = SubResource("CylinderShape_Pillar")
+shape = SubResource("BoxShape_PillarFlat")
 
 [node name="MovingPlatform" parent="Environment" instance=ExtResource("5_platform")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.8, -8)
-move_offset = Vector3(0, 0, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -14)
+move_offset = Vector3(0, 0, -5)
 speed = 1.0
 
 [node name="PhysicsBoxes" type="Node3D" parent="Environment"]
 
 [node name="Box1" type="RigidBody3D" parent="Environment/PhysicsBoxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.6, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.45, 3.5)
 collision_layer = 1
 collision_mask = 3
-mass = 5.0
+mass = 4.0
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/PhysicsBoxes/Box1"]
 mesh = SubResource("BoxMesh_Physics")
@@ -322,10 +339,10 @@ mesh = SubResource("BoxMesh_Physics")
 shape = SubResource("BoxShape_Physics")
 
 [node name="Box2" type="RigidBody3D" parent="Environment/PhysicsBoxes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.7, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.45, 3.5)
 collision_layer = 1
 collision_mask = 3
-mass = 5.0
+mass = 4.0
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/PhysicsBoxes/Box2"]
 mesh = SubResource("BoxMesh_Physics")
@@ -333,31 +350,43 @@ mesh = SubResource("BoxMesh_Physics")
 [node name="Col" type="CollisionShape3D" parent="Environment/PhysicsBoxes/Box2"]
 shape = SubResource("BoxShape_Physics")
 
+[node name="Box3" type="RigidBody3D" parent="Environment/PhysicsBoxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 1.35, 3.5)
+collision_layer = 1
+collision_mask = 3
+mass = 4.0
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/PhysicsBoxes/Box3"]
+mesh = SubResource("BoxMesh_Physics")
+
+[node name="Col" type="CollisionShape3D" parent="Environment/PhysicsBoxes/Box3"]
+shape = SubResource("BoxShape_Physics")
+
 [node name="Collectibles" type="Node3D" parent="Environment"]
 
 [node name="Gem1" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 2.5)
 
 [node name="Gem2" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 3.8, -3.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -3.0)
 
 [node name="Gem3" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 4.0, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.75, 2.2, -2.0)
 
 [node name="Gem4" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.8, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, -8.0)
 
 [node name="Gem5" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 3.4, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 2.8, -4.5)
 
 [node name="Gem6" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 4.0, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 3.3, -0.5)
 
 [node name="Gem7" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4.2, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 3.8, 3.5)
 
 [node name="Gem8" parent="Environment/Collectibles" instance=ExtResource("4_gem")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 3.2, -4.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -22)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -417,9 +446,22 @@ text = "00:00.0"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="FpsLabel" type="Label" parent="HUD/MarginContainer/TopBar"]
+[node name="FpsBox" type="PanelContainer" parent="HUD/MarginContainer/TopBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.75, 0.85, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_HUDPanel")
+
+[node name="HBox" type="HBoxContainer" parent="HUD/MarginContainer/TopBar/FpsBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="Label" parent="HUD/MarginContainer/TopBar/FpsBox/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "⚡"
+
+[node name="FpsLabel" type="Label" parent="HUD/MarginContainer/TopBar/FpsBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 text = "60 FPS"
 
@@ -454,8 +496,92 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 13
-text = "[A] ジャンプ　[B] ダッシュ　[RB] 弾丸発射　[LB] 180°反転　[Start] 設定"
+text = "[A/B] ジャンプ　[B/X] ダッシュ　[Y/RB] 射撃　[LB] 180°反転　[Start] 設定"
 horizontal_alignment = 1
+
+[node name="InputOverlay" type="PanelContainer" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -142.0
+offset_right = 220.0
+offset_bottom = -106.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_HUDPanel")
+
+[node name="Grid" type="HBoxContainer" parent="HUD/InputOverlay"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Up" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "▲"
+
+[node name="Down" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "▼"
+
+[node name="Left" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "◀"
+
+[node name="Right" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "▶"
+
+[node name="Sep" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.2)
+layout_mode = 2
+text = "|"
+
+[node name="A" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[A]"
+
+[node name="B" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[B]"
+
+[node name="X" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[X]"
+
+[node name="Y" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[Y]"
+
+[node name="LB" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[LB]"
+
+[node name="RB" type="Label" parent="HUD/InputOverlay/Grid"]
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[RB]"
 
 [node name="ClearBanner" type="CenterContainer" parent="HUD"]
 visible = false
@@ -621,11 +747,11 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
-text = "閉じる / ゲームに戻る [Start / A]"
+text = "閉じる / ゲームに戻る [Start / A / B]"
 
 [node name="Guide" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 13
-text = "十字キー ▲▼: 項目移動 ｜ ◀▶: 感度調整 ｜ A/Start: 決定"
+text = "十字キー ▲▼: 項目移動 ｜ ◀▶: 感度調整 ｜ B/Start: 閉じる"
 horizontal_alignment = 1

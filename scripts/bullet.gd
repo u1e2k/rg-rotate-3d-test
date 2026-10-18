@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 	global_position += direction * speed * delta
 
 func _on_body_entered(body: Node3D) -> void:
-	if has_hit or body is Player:
+	if has_hit or body.name == "Player" or body is CharacterBody3D:
 		return
 	has_hit = true
 	
@@ -40,8 +40,8 @@ func _on_body_entered(body: Node3D) -> void:
 		
 	# Apply physics impulse if hitting RigidBody3D (like the test boxes)
 	if body is RigidBody3D:
-		var impulse_dir = (direction + Vector3(0, 0.25, 0)).normalized()
-		body.apply_central_impulse(impulse_dir * 18.0)
+		var impulse_dir = (direction + Vector3(0, 0.35, 0)).normalized()
+		body.apply_central_impulse(impulse_dir * 22.0)
 		
 	# Quick flash and burst animation
 	var tween = create_tween().set_parallel(true)
