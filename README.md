@@ -81,8 +81,8 @@ godot --headless --export-debug "Android" build/rg_rotate_3d_test.apk
 # 2. 実機へ転送・インストール
 adb install -r build/rg_rotate_3d_test.apk
 
-# 3. アプリ起動
-adb shell am start -n "com.anbernic.rgrotate.test3d/com.godot.game.GodotApp"
+# 3. アプリ起動 (または端末ホーム画面のアイコンをタップ)
+adb shell monkey -p com.anbernic.rgrotate.test3d -c android.intent.category.LAUNCHER 1
 ```
 
 ### 実機ログのリアルタイム確認
