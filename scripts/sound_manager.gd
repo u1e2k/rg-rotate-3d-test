@@ -15,6 +15,16 @@ func play_jump() -> void:
 	var stream = _generate_tone_sweep(320.0, 680.0, 0.16, 0.4)
 	_play_stream(stream, -6.0)
 
+func play_shoot() -> void:
+	# Laser blaster zap: high to low sweep
+	var stream = _generate_tone_sweep(880.0, 220.0, 0.12, 0.45)
+	_play_stream(stream, -4.0)
+
+func play_hit() -> void:
+	# Impact hit burst
+	var stream = _generate_noise_burst(0.08, 0.35)
+	_play_stream(stream, -6.0)
+
 func play_coin() -> void:
 	var stream = _generate_arpeggio([587.33, 880.0, 1174.66], 0.08, 0.35)
 	_play_stream(stream, -4.0)

@@ -454,7 +454,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 13
-text = "[Space/A] ジャンプ　[Shift/B] ダッシュ　[Q/RB] 180°反転　[Start] 設定"
+text = "[A] ジャンプ　[B] ダッシュ　[RB] 弾丸発射　[LB] 180°反転　[Start] 設定"
 horizontal_alignment = 1
 
 [node name="ClearBanner" type="CenterContainer" parent="HUD"]

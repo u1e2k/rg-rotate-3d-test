@@ -26,11 +26,17 @@ var elapsed_time: float = 0.0
 var is_cleared: bool = false
 var is_menu_open: bool = false
 
+# Array of focusable controls in menu
+var menu_items: Array[Control] = []
+var current_menu_index: int = 0
+
 func _ready() -> void:
+	# Main scene handles input ALWAYS, even when paused
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	SettingsScript.load_settings()
 	_setup_settings_ui()
 	
-	# Setup collectibles count and signals
 	total_gems = collectibles_container.get_child_count()
 	for child in collectibles_container.get_children():
 		if child.has_signal("collected"):
@@ -39,15 +45,9 @@ func _ready() -> void:
 	clear_banner.visible = false
 	settings_menu.visible = false
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("toggle_menu"):
-		toggle_settings_menu()
-		get_viewport().set_input_as_handled()
-	elif is_menu_open and event.is_action_pressed("ui_cancel"):
-		toggle_settings_menu()
-		get_viewport().set_input_as_handled()
-
 func _setup_settings_ui() -> void:
+	menu_items = [turn_slider, cam_slider, close_btn]
+	
 	turn_slider.value = SettingsScript.turn_sensitivity
 	_update_turn_label(turn_slider.value)
 	turn_slider.value_changed.connect(_on_turn_slider_changed)
@@ -57,6 +57,61 @@ func _setup_settings_ui() -> void:
 	cam_slider.value_changed.connect(_on_cam_slider_changed)
 	
 	close_btn.pressed.connect(toggle_settings_menu)
+
+func _input(event: InputEvent) -> void:
+	if not is_menu_open:
+		if event.is_action_pressed("toggle_menu"):
+			toggle_settings_menu()
+			get_viewport().set_input_as_handled()
+		return
+		
+	# Menu is OPEN: explicitly handle all physical buttons to guarantee 100% responsiveness
+	if event.is_action_pressed("toggle_menu") or event.is_action_pressed("ui_cancel"):
+		toggle_settings_menu()
+		get_viewport().set_input_as_handled()
+		return
+		
+	if event.is_action_pressed("ui_down"):
+		current_menu_index = (current_menu_index + 1) % menu_items.size()
+		menu_items[current_menu_index].grab_focus()
+		var sm = SoundManagerScript.get_instance()
+		if sm:
+			sm.play_step()
+		get_viewport().set_input_as_handled()
+		return
+		
+	if event.is_action_pressed("ui_up"):
+		current_menu_index = (current_menu_index - 1 + menu_items.size()) % menu_items.size()
+		menu_items[current_menu_index].grab_focus()
+		var sm = SoundManagerScript.get_instance()
+		if sm:
+			sm.play_step()
+		get_viewport().set_input_as_handled()
+		return
+		
+	if event.is_action_pressed("ui_accept"):
+		if current_menu_index == 2: # Close button
+			toggle_settings_menu()
+			get_viewport().set_input_as_handled()
+		return
+		
+	if event.is_action_pressed("ui_left"):
+		if current_menu_index == 0:
+			turn_slider.value = clampf(turn_slider.value - turn_slider.step, turn_slider.min_value, turn_slider.max_value)
+			get_viewport().set_input_as_handled()
+		elif current_menu_index == 1:
+			cam_slider.value = clampf(cam_slider.value - cam_slider.step, cam_slider.min_value, cam_slider.max_value)
+			get_viewport().set_input_as_handled()
+		return
+		
+	if event.is_action_pressed("ui_right"):
+		if current_menu_index == 0:
+			turn_slider.value = clampf(turn_slider.value + turn_slider.step, turn_slider.min_value, turn_slider.max_value)
+			get_viewport().set_input_as_handled()
+		elif current_menu_index == 1:
+			cam_slider.value = clampf(cam_slider.value + cam_slider.step, cam_slider.min_value, cam_slider.max_value)
+			get_viewport().set_input_as_handled()
+		return
 
 func toggle_settings_menu() -> void:
 	is_menu_open = !is_menu_open
@@ -68,6 +123,7 @@ func toggle_settings_menu() -> void:
 		sm.play_coin()
 		
 	if is_menu_open:
+		current_menu_index = 0
 		turn_slider.grab_focus()
 	else:
 		SettingsScript.save_settings()

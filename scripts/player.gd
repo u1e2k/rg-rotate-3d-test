@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 const SoundManagerScript = preload("res://scripts/sound_manager.gd")
 const SettingsScript = preload("res://scripts/settings_manager.gd")
+const BulletScene = preload("res://scenes/bullet.tscn")
 
 @export var forward_speed: float = 6.0
 @export var sprint_speed: float = 9.5
@@ -30,6 +31,7 @@ const SettingsScript = preload("res://scripts/settings_manager.gd")
 # Internal states
 var anim_time: float = 0.0
 var step_timer: float = 0.0
+var shoot_cooldown_timer: float = 0.0
 var target_tilt_z: float = 0.0
 var current_tilt_z: float = 0.0
 var is_turning_180: bool = false
@@ -86,11 +88,42 @@ func _physics_process(delta: float) -> void:
 
 	_process_movement(delta)
 	_process_jump()
+	_process_shoot(delta)
 	
 	move_and_slide()
 	
 	_update_camera(delta)
 	_update_procedural_animation(delta)
+
+func _process_shoot(delta: float) -> void:
+	if shoot_cooldown_timer > 0.0:
+		shoot_cooldown_timer -= delta
+		
+	if Input.is_action_just_pressed("shoot") and shoot_cooldown_timer <= 0.0:
+		shoot_cooldown_timer = 0.2
+		_fire_bullet()
+
+func _fire_bullet() -> void:
+	var bullet = BulletScene.instantiate()
+	var spawn_pos = global_position + Vector3(0, 0.85, 0) - transform.basis.z * 0.7
+	bullet.global_position = spawn_pos
+	bullet.direction = -transform.basis.z.normalized()
+	get_tree().current_scene.add_child(bullet)
+	
+	var sm = SoundManagerScript.get_instance()
+	if sm:
+		sm.play_shoot()
+		
+	# Recoil animation
+	var recoil_tween = create_tween()
+	recoil_tween.tween_property(model, "position:z", 0.08, 0.05)
+	recoil_tween.tween_property(model, "position:z", 0.0, 0.1)
+	
+	# Visor flash
+	if visor_light:
+		var flash_tween = create_tween()
+		flash_tween.tween_property(visor_light, "light_energy", 2.5, 0.04)
+		flash_tween.tween_property(visor_light, "light_energy", 0.6, 0.12)
 
 func _process_rotation(delta: float) -> void:
 	var turn_left_val = Input.get_action_strength("turn_left")
