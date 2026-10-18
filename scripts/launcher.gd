@@ -61,25 +61,25 @@ var modes: Array[Dictionary] = [
 	{
 		"id": "space",
 		"title": "3. Star Flight & Space",
-		"badge": "PLANNED (Phase 3)",
+		"badge": "PLAYABLE (60 FPS)",
 		"badge_color": Color(0.65, 0.35, 0.95),
 		"subtitle": "スターフォックス / Elite風 ドッグファイト",
 		"desc": "3D無重力フライト（ピッチ・ロール・ブースト）、アステロイド小惑星群、ロックオンホーミングミサイル、敵戦闘機編隊AIの検証。",
 		"tech": "・背景: プロシージャル・スターフィールド\n・小惑星: MultiMesh アステロイド群\n・カメラ: 三人称追従 / コックピット\n・戦闘: ロックオンHUD & レティクル",
-		"scene": "",
-		"playable": false,
+		"scene": "res://scenes/space_flight_mode.tscn",
+		"playable": true,
 		"theme_color": Color(0.65, 0.35, 0.95)
 	},
 	{
 		"id": "openworld",
 		"title": "4. Open World & Terrain",
-		"badge": "PLANNED (Phase 4)",
-		"badge_color": Color(0.25, 0.75, 0.65),
+		"badge": "PLAYABLE (60 FPS)",
+		"badge_color": Color(0.20, 0.80, 0.45),
 		"subtitle": "広大マップ・LOD & バギー走破",
-		"desc": "1〜2km四方の起伏のある広域ハイトマップ、距離フォグ、木々・岩の動的インスタンシング、4輪バギーでの高速走破ストレステスト。",
+		"desc": "1 - 2km四方の起伏のある広域ハイトマップ、距離フォグ、木々・岩の動的インスタンシング、4輪バギーでの高速走破ストレステスト。",
 		"tech": "・地形: グリッドチャンク & LODメッシュ\n・フォグ: 低負荷距離フォグ\n・ストリーミング: チャンク単位動的生成\n・ビークル: 4輪サスペンションバギー",
-		"scene": "",
-		"playable": false,
+		"scene": "res://scenes/openworld_mode.tscn",
+		"playable": true,
 		"theme_color": Color(0.20, 0.80, 0.45)
 	}
 ]

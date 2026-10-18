@@ -1,0 +1,113 @@
+[gd_scene load_steps=12 format=3 uid="uid://sbuggy6006"]
+
+[ext_resource type="Script" path="res://scripts/offroad_buggy.gd" id="1_buggy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Buggy"]
+size = Vector3(2.2, 1.4, 3.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_RallyOrange"]
+albedo_color = Color(0.96, 0.52, 0.12, 1)
+metallic = 0.6
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_Body"]
+material = SubResource("StandardMaterial3D_RallyOrange")
+size = Vector3(1.6, 0.65, 3.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_RollCage"]
+albedo_color = Color(0.18, 0.2, 0.24, 1)
+metallic = 0.85
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_Cage"]
+material = SubResource("StandardMaterial3D_RollCage")
+size = Vector3(1.4, 0.85, 1.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_TireRubber"]
+albedo_color = Color(0.12, 0.12, 0.14, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Tire"]
+material = SubResource("StandardMaterial3D_TireRubber")
+top_radius = 0.45
+bottom_radius = 0.45
+height = 0.38
+radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Headlight"]
+albedo_color = Color(1, 0.95, 0.8, 1)
+emission_enabled = true
+emission = Color(1, 0.95, 0.8, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_Light"]
+material = SubResource("StandardMaterial3D_Headlight")
+radius = 0.15
+height = 0.3
+
+[node name="OffroadBuggy" type="CharacterBody3D"]
+collision_layer = 1
+collision_mask = 2
+script = ExtResource("1_buggy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("BoxShape3D_Buggy")
+
+[node name="Chassis" type="Node3D" parent="."]
+
+[node name="BodyMesh" type="MeshInstance3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+mesh = SubResource("BoxMesh_Body")
+
+[node name="RollCage" type="MeshInstance3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -0.2)
+mesh = SubResource("BoxMesh_Cage")
+
+[node name="LightL" type="MeshInstance3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.5, -1.5)
+mesh = SubResource("SphereMesh_Light")
+
+[node name="LightR" type="MeshInstance3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.5, -1.5)
+mesh = SubResource("SphereMesh_Light")
+
+[node name="WheelFL" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0, -1.1)
+
+[node name="TireMesh" type="MeshInstance3D" parent="Chassis/WheelFL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_Tire")
+
+[node name="WheelFR" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0, -1.1)
+
+[node name="TireMesh" type="MeshInstance3D" parent="Chassis/WheelFR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_Tire")
+
+[node name="WheelRL" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0, 1.1)
+
+[node name="TireMesh" type="MeshInstance3D" parent="Chassis/WheelRL"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_Tire")
+
+[node name="WheelRR" type="Node3D" parent="Chassis"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0, 1.1)
+
+[node name="TireMesh" type="MeshInstance3D" parent="Chassis/WheelRR"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_Tire")
+
+[node name="ChaseMount" type="Node3D" parent="."]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="ChaseMount"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 1.9, 0)
+spring_length = 6.4
+
+[node name="Camera3D" type="Camera3D" parent="ChaseMount/SpringArm3D"]
+current = true
+fov = 68.0
+near = 0.2
+far = 650.0

@@ -1,0 +1,241 @@
+[gd_scene load_steps=9 format=3 uid="uid://sopenworld7007"]
+
+[ext_resource type="Script" path="res://scripts/openworld_mode.gd" id="1_stage"]
+[ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
+[ext_resource type="Script" path="res://scripts/terrain_chunk_manager.gd" id="3_terrain"]
+[ext_resource type="Script" path="res://scripts/vegetation_streamer.gd" id="4_vegetation"]
+[ext_resource type="PackedScene" path="res://scenes/offroad_buggy.tscn" id="5_buggy"]
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="6_pause"]
+
+[sub_resource type="Environment" id="Environment_OpenWorld"]
+background_mode = 1
+background_color = Color(0.52, 0.7, 0.88, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.68, 0.74, 0.82, 1)
+ambient_light_energy = 0.8
+tonemap_mode = 2
+glow_enabled = false
+fog_enabled = true
+fog_light_color = Color(0.55, 0.72, 0.88, 1)
+fog_density = 0.0032
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BarBg"]
+bg_color = Color(0.1, 0.12, 0.18, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TurboFg"]
+bg_color = Color(1, 0.55, 0.15, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="OpenWorldMode" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("2_sound")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_OpenWorld")
+
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 80, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.25
+shadow_enabled = true
+shadow_bias = 0.04
+directional_shadow_max_distance = 60.0
+
+[node name="TerrainChunkManager" type="Node3D" parent="."]
+script = ExtResource("3_terrain")
+
+[node name="VegetationStreamer" type="Node3D" parent="."]
+script = ExtResource("4_vegetation")
+
+[node name="TreeMultiMesh" type="MultiMeshInstance3D" parent="VegetationStreamer"]
+
+[node name="RockMultiMesh" type="MultiMeshInstance3D" parent="VegetationStreamer"]
+
+[node name="OffroadBuggy" parent="." instance=ExtResource("5_buggy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="PauseMenu" parent="." instance=ExtResource("6_pause")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Margin" type="MarginContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="TopBar" type="HBoxContainer" parent="HUD/Margin"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="SpeedBox" type="PanelContainer" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Margin/TopBar/SpeedBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SpeedLabel" type="Label" parent="HUD/Margin/TopBar/SpeedBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "  0 km/h"
+
+[node name="GearBadge" type="Label" parent="HUD/Margin/TopBar/SpeedBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "[DRIVE]"
+
+[node name="LodBox" type="PanelContainer" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Margin/TopBar/LodBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="HUD/Margin/TopBar/LodBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "LOD:"
+
+[node name="LodLabel" type="Label" parent="HUD/Margin/TopBar/LodBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "25 chunks"
+
+[node name="Spacer" type="Control" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FpsLabel" type="Label" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "60 FPS"
+
+[node name="NavInfo" type="VBoxContainer" parent="HUD/Margin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/separation = 4
+
+[node name="CoordsLabel" type="Label" parent="HUD/Margin/NavInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "GPS: X: +0m  Z: +0m  ALT: 5m"
+
+[node name="TurboLabel" type="Label" parent="HUD/Margin/NavInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.65, 0.2, 1)
+theme_override_font_sizes/font_size = 10
+text = "NITRO TURBO [Y]"
+
+[node name="TurboBar" type="ProgressBar" parent="HUD/Margin/NavInfo"]
+custom_minimum_size = Vector2(100, 6)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_BarBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_TurboFg")
+value = 100.0
+show_percentage = false
+
+[node name="InputOverlay" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -28.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Grid" type="HBoxContainer" parent="HUD/InputOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Up" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▲"
+
+[node name="Down" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▼"
+
+[node name="Left" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "◀"
+
+[node name="Right" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▶"
+
+[node name="Sep" type="VSeparator" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+
+[node name="A" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[A]"
+
+[node name="B" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[B:Drift]"
+
+[node name="X" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[X]"
+
+[node name="Y" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[Y:Nitro]"
+
+[node name="LB" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[LB:J-Turn]"
+
+[node name="RB" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[RB]"

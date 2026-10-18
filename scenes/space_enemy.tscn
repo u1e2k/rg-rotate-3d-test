@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://senemy3003"]
+
+[ext_resource type="Script" path="res://scripts/space_enemy.gd" id="1_enemy"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Enemy"]
+radius = 1.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_EnemyHull"]
+albedo_color = Color(0.8, 0.15, 0.15, 1)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="PrismMesh" id="PrismMesh_Fuselage"]
+material = SubResource("StandardMaterial3D_EnemyHull")
+size = Vector3(1.4, 3.2, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Wings"]
+albedo_color = Color(0.2, 0.2, 0.25, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_Wings"]
+material = SubResource("StandardMaterial3D_Wings")
+size = Vector3(4.2, 0.12, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Visor"]
+albedo_color = Color(0.05, 0.05, 0.08, 1)
+roughness = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_Visor"]
+material = SubResource("StandardMaterial3D_Visor")
+radius = 0.35
+height = 0.7
+
+[node name="SpaceEnemy" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_enemy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_Enemy")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Fuselage" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PrismMesh_Fuselage")
+
+[node name="Wings" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
+mesh = SubResource("BoxMesh_Wings")
+
+[node name="Visor" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -0.6)
+mesh = SubResource("SphereMesh_Visor")
+
+[node name="LeftMuzzle" type="Marker3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, -0.8)
+
+[node name="RightMuzzle" type="Marker3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, -0.8)
+

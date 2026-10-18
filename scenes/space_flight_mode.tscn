@@ -1,0 +1,373 @@
+[gd_scene load_steps=10 format=3 uid="uid://sfmode5005"]
+
+[ext_resource type="Script" path="res://scripts/space_flight_mode.gd" id="1_stage"]
+[ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
+[ext_resource type="Script" path="res://scripts/asteroid_field.gd" id="3_asteroids"]
+[ext_resource type="PackedScene" path="res://scenes/space_fighter.tscn" id="4_fighter"]
+[ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="5_pause"]
+
+[sub_resource type="Environment" id="Environment_Space"]
+background_mode = 1
+background_color = Color(0.015, 0.02, 0.045, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.12, 0.16, 0.25, 1)
+ambient_light_energy = 0.65
+tonemap_mode = 2
+glow_enabled = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BarBg"]
+bg_color = Color(0.1, 0.12, 0.18, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_HullFg"]
+bg_color = Color(0.2, 0.85, 0.35, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ShieldFg"]
+bg_color = Color(0.15, 0.65, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BoostFg"]
+bg_color = Color(1, 0.65, 0.15, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="SpaceFlightMode" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("2_sound")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_Space")
+
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 40, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.35
+
+[node name="AsteroidField" type="Node3D" parent="."]
+script = ExtResource("3_asteroids")
+
+[node name="AsteroidsMultiMesh" type="MultiMeshInstance3D" parent="AsteroidField"]
+
+[node name="StarfieldMultiMesh" type="MultiMeshInstance3D" parent="AsteroidField"]
+
+[node name="SpaceFighter" parent="." instance=ExtResource("4_fighter")]
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="PauseMenu" parent="." instance=ExtResource("5_pause")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="CenterReticle" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CrossV" type="ColorRect" parent="HUD/CenterReticle"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -12.0
+offset_right = 1.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.9, 1, 0.6)
+
+[node name="CrossH" type="ColorRect" parent="HUD/CenterReticle"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -12.0
+offset_top = -1.0
+offset_right = 12.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.9, 1, 0.6)
+
+[node name="LockOverlay" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LockBox" type="Panel" parent="HUD/LockOverlay"]
+layout_mode = 0
+offset_right = 56.0
+offset_bottom = 56.0
+
+[node name="LockLabel" type="Label" parent="HUD/LockOverlay/LockBox"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -18.0
+offset_bottom = -2.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.2, 1)
+theme_override_font_sizes/font_size = 11
+text = "LOCK-ON [A]"
+horizontal_alignment = 1
+
+[node name="DistLabel" type="Label" parent="HUD/LockOverlay/LockBox"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 2.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.8, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 10
+text = "120m"
+horizontal_alignment = 1
+
+[node name="OffscreenIndicators" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="TopBar" type="HBoxContainer" parent="HUD/Margin"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="KillsBox" type="PanelContainer" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Margin/TopBar/KillsBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="Label" parent="HUD/Margin/TopBar/KillsBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "🎯 KILLS:"
+
+[node name="KillsLabel" type="Label" parent="HUD/Margin/TopBar/KillsBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "0 機"
+
+[node name="EnemiesBox" type="PanelContainer" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Margin/TopBar/EnemiesBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="Label" parent="HUD/Margin/TopBar/EnemiesBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.2, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "BANDITS:"
+
+[node name="CountLabel" type="Label" parent="HUD/Margin/TopBar/EnemiesBox/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "5 機"
+
+[node name="HullBox" type="VBoxContainer" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="ShieldBar" type="ProgressBar" parent="HUD/Margin/TopBar/HullBox"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_BarBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ShieldFg")
+max_value = 10.0
+value = 10.0
+show_percentage = false
+
+[node name="HullBar" type="ProgressBar" parent="HUD/Margin/TopBar/HullBox"]
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_BarBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_HullFg")
+max_value = 10.0
+value = 10.0
+show_percentage = false
+
+[node name="FpsLabel" type="Label" parent="HUD/Margin/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "60 FPS"
+
+[node name="FlightInfo" type="VBoxContainer" parent="HUD/Margin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/separation = 4
+
+[node name="CamModeLabel" type="Label" parent="HUD/Margin/FlightInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.85, 1, 0.9)
+theme_override_font_sizes/font_size = 11
+text = "VIEW: CHASE [X]"
+
+[node name="SpeedLabel" type="Label" parent="HUD/Margin/FlightInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "32 m/s [CRUISE]"
+
+[node name="BoostBar" type="ProgressBar" parent="HUD/Margin/FlightInfo"]
+custom_minimum_size = Vector2(90, 6)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_BarBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_BoostFg")
+value = 100.0
+show_percentage = false
+
+[node name="HitBanner" type="Label" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -65.0
+offset_right = 220.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="InputOverlay" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -28.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Grid" type="HBoxContainer" parent="HUD/InputOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Up" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▲"
+
+[node name="Down" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▼"
+
+[node name="Left" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "◀"
+
+[node name="Right" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "▶"
+
+[node name="Sep" type="VSeparator" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+
+[node name="A" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[A:Missile]"
+
+[node name="B" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[B:Brake]"
+
+[node name="X" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[X:Cam]"
+
+[node name="Y" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[Y:Boost]"
+
+[node name="LB" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[LB:Roll]"
+
+[node name="RB" type="Label" parent="HUD/InputOverlay/Grid"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+theme_override_font_sizes/font_size = 12
+text = "[RB:Blaster]"

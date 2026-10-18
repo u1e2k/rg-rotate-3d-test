@@ -69,6 +69,31 @@ func play_engine_rev() -> void:
 	var stream = _generate_tone_sweep(180.0, 480.0, 0.3, 0.4)
 	_play_stream(stream, -6.0)
 
+func play_lockon() -> void:
+	# Crisp two-tone target lock chime
+	var stream = _generate_arpeggio([880.0, 1318.5], 0.06, 0.4)
+	_play_stream(stream, -4.0)
+
+func play_missile_launch() -> void:
+	# Rocket booster whoosh: low frequency rising whoosh
+	var stream = _generate_tone_sweep(140.0, 520.0, 0.22, 0.45)
+	_play_stream(stream, -4.0)
+
+func play_boost() -> void:
+	# Space thruster ignition flare
+	var stream = _generate_tone_sweep(220.0, 660.0, 0.25, 0.4)
+	_play_stream(stream, -5.0)
+
+func play_barrel_roll() -> void:
+	# Aerodynamic spinning swoosh
+	var stream = _generate_tone_sweep(520.0, 260.0, 0.18, 0.35)
+	_play_stream(stream, -6.0)
+
+func play_plasma() -> void:
+	# Sci-fi twin plasma blaster
+	var stream = _generate_tone_sweep(1050.0, 310.0, 0.09, 0.4)
+	_play_stream(stream, -5.0)
+
 func _play_stream(stream: AudioStreamWAV, volume_db: float = 0.0) -> void:
 	var player = AudioStreamPlayer.new()
 	player.stream = stream
