@@ -156,3 +156,16 @@ adb pull /sdcard/screen.png ./docs/images/screenshot.png
 ```powershell
 adb logcat -d -s godot:*
 ```
+
+---
+
+## 8. Verified Game Architecture Modules & Benchmark Documentation
+
+Detailed reference implementations and benchmarks are documented in `.wiki/`:
+- **Mode 1: Basic 3D Sandbox (`Mode-1-Basic-Sandbox.md`)**: Moving platform, lift, physics tower, airplane mount & 3D flight physics.
+- **Mode 2: Musou Horde (`Mode-2-Musou-Horde.md`)**: MultiMesh 1 Draw Call, 100+ soldiers crowd AI (2D separation), sweeping knockback slash.
+- **Mode 3: Space Dogfight (`Mode-3-Space-Dogfight.md`)**: Zero-g 3D flight, asteroid belts, auto lock-on HUD, homing torpedoes, enemy squadron AI.
+- **Mode 4: Open World & Terrain LOD (`Mode-4-Open-World-Terrain.md`)**: 5×5 chunk procedural streaming, 2-level distance LOD (75% triangle saving), fog fade, 4-wheel suspension buggy.
+- **Mode 5: Dungeon & Boss Battle (`Mode-5-Dungeon-Boss-Battle.md`)**: Stone arena, lighting stress test (2 vs 6 dynamic lights), Z-targeting lock-on, dodge roll with i-frames, telegraphed boss AI with expanding shockwave rings.
+- **Shared Frameworks (`Game-Framework-Architecture.md`)**: `Interactable`, `CommonPauseMenu`, procedural sound synthesizer (`SoundManager`).
+
