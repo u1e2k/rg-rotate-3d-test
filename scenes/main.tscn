@@ -830,16 +830,30 @@ horizontal_alignment = 2
 layout_mode = 2
 
 [node name="CloseButton" type="Button" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 46)
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 focus_neighbor_top = NodePath("../CamSetting/HBox/CamSlider")
+focus_neighbor_bottom = NodePath("../ExitToHubButton")
+focus_next = NodePath("../ExitToHubButton")
 focus_previous = NodePath("../CamSetting/HBox/CamSlider")
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
-text = "閉じる / ゲームに戻る [Start / A / B]"
+text = "ゲームに戻る [Start / A / B]"
+
+[node name="ExitToHubButton" type="Button" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+focus_neighbor_top = NodePath("../CloseButton")
+focus_previous = NodePath("../CloseButton")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
+text = "🏠 モード選択へ戻る (Exit to Launcher)"
 
 [node name="Guide" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
 layout_mode = 2

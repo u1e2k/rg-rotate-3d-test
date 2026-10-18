@@ -11,6 +11,13 @@ This skill provides comprehensive hardware specifications, performance tuning be
 
 ---
 
+## 📌 Development Continuity & Roadmap Tracking
+- Whenever working on this repository, **ALWAYS inspect `ROADMAP.md` first** to see the current progress and unfinished tasks.
+- As each sub-task is completed, immediately update the markdown checkboxes (`- [x]`) in `ROADMAP.md`.
+- If a session is interrupted or context is refreshed, resume strictly from the first unchecked item in `ROADMAP.md`.
+
+---
+
 ## 1. Hardware Specifications & Constraints
 
 - **Display**: 3.5-inch IPS, **720 × 720 pixels (1:1 Square aspect ratio)**.

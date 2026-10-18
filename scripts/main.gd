@@ -31,6 +31,7 @@ const SettingsScript = preload("res://scripts/settings_manager.gd")
 @onready var cam_slider: HSlider = $HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting/HBox/CamSlider
 @onready var cam_value_label: Label = $HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting/HBox/CamValueLabel
 @onready var close_btn: Button = $HUD/SettingsMenu/Center/Panel/Margin/VBox/CloseButton
+@onready var exit_hub_btn: Button = $HUD/SettingsMenu/Center/Panel/Margin/VBox/ExitToHubButton
 
 # Interaction & Vehicle references
 @onready var airplane: Node3D = $Environment/Airplane
@@ -71,7 +72,7 @@ func _ready() -> void:
 		airplane.connect("board_state_changed", _on_airplane_board_state_changed)
 
 func _setup_settings_ui() -> void:
-	menu_items = [turn_slider, cam_slider, close_btn]
+	menu_items = [turn_slider, cam_slider, close_btn, exit_hub_btn]
 	
 	turn_slider.value = SettingsScript.turn_sensitivity
 	_update_turn_label(turn_slider.value)
@@ -82,6 +83,14 @@ func _setup_settings_ui() -> void:
 	cam_slider.value_changed.connect(_on_cam_slider_changed)
 	
 	close_btn.pressed.connect(toggle_settings_menu)
+	exit_hub_btn.pressed.connect(_on_exit_to_hub_pressed)
+
+func _on_exit_to_hub_pressed() -> void:
+	get_tree().paused = false
+	var sm = SoundManagerScript.get_instance()
+	if sm and sm.has_method("play_confirm"):
+		sm.play_confirm()
+	get_tree().change_scene_to_file("res://scenes/launcher.tscn")
 
 func _input(event: InputEvent) -> void:
 	if not is_menu_open:
@@ -118,6 +127,9 @@ func _input(event: InputEvent) -> void:
 		if current_menu_index == 2:
 			get_viewport().set_input_as_handled()
 			toggle_settings_menu()
+		elif current_menu_index == 3:
+			get_viewport().set_input_as_handled()
+			_on_exit_to_hub_pressed()
 		return
 		
 	if event.is_action_pressed("ui_left"):

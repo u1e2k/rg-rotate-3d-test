@@ -1,0 +1,292 @@
+[gd_scene load_steps=6 format=3 uid="uid://cb5x2y8q3j7k1"]
+
+[ext_resource type="Script" path="res://scripts/launcher.gd" id="1_launcher"]
+[ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Card"]
+bg_color = Color(0.08, 0.1, 0.14, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.45, 0.85, 0.8)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Badge"]
+bg_color = Color(0.12, 0.5, 0.25, 0.85)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+expand_margin_left = 6.0
+expand_margin_top = 2.0
+expand_margin_right = 6.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TechBox"]
+bg_color = Color(0.04, 0.05, 0.08, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 0.4)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Launcher" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_launcher")
+
+[node name="SoundManager" type="Node" parent="."]
+script = ExtResource("2_sound")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.07, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 44
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TopBar" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="TitleBox" type="VBoxContainer" parent="Margin/VBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AppTitle" type="Label" parent="Margin/VBox/TopBar/TitleBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+text = "RG ROTATE 3D BENCHMARK"
+
+[node name="Subtitle" type="Label" parent="Margin/VBox/TopBar/TitleBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.5, 0.65, 0.8, 1)
+text = "Unisoc T618 / Mali-G52 MP2 / 720×720"
+
+[node name="FpsLabel" type="Label" parent="Margin/VBox/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+text = "60 FPS"
+
+[node name="CenterCard" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/CenterCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/CenterCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconBox" type="HBoxContainer" parent="Margin/VBox/CenterCard/Margin/VBox"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="Margin/VBox/CenterCard/Margin/VBox/IconBox"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.2, 0.55, 0.95, 1)
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox/CenterCard/Margin/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Margin/VBox/CenterCard/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1. 3D Sandbox & Flight"
+
+[node name="BadgePanel" type="PanelContainer" parent="Margin/VBox/CenterCard/Margin/VBox/Header"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Badge")
+
+[node name="BadgeLabel" type="Label" parent="Margin/VBox/CenterCard/Margin/VBox/Header/BadgePanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "PLAYABLE"
+
+[node name="SubtitleLabel" type="Label" parent="Margin/VBox/CenterCard/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+text = "基本3Dアクション & 飛行機フライト"
+
+[node name="DescLabel" type="Label" parent="Margin/VBox/CenterCard/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+text = "十字キー旋回＋自動カメラ追従、階段昇降、リフト、物理ブロックタワー、クリスタル収集、射撃、シームレス搭乗型飛行機テスト。"
+autowrap_mode = 3
+
+[node name="TechSpecsPanel" type="PanelContainer" parent="Margin/VBox/CenterCard/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_TechBox")
+
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/CenterCard/Margin/VBox/TechSpecsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="TechSpecsLabel" type="Label" parent="Margin/VBox/CenterCard/Margin/VBox/TechSpecsPanel/Margin"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.7, 0.8, 0.95, 1)
+text = "・解像度: 720×720 (1:1)
+・描画: gl_compatibility (GLES3)
+・物理: Jolt/Godot Physics 3D
+・音響: Procedural WAV"
+autowrap_mode = 3
+
+[node name="NavBar" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="NavGuide" type="Label" parent="Margin/VBox/NavBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.6, 0.7, 0.85, 1)
+text = "◀ 十字キー 左右 / 上下 で選択 ▶"
+
+[node name="CounterLabel" type="Label" parent="Margin/VBox/NavBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+text = "MODE 1 / 4"
+
+[node name="ActionPrompt" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="PromptLabel" type="Label" parent="Margin/VBox/ActionPrompt"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
+text = "▶ [ A ボタン ] でモード開始"
+horizontal_alignment = 1
+
+[node name="InputOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Grid" type="HBoxContainer" parent="InputOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Up" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "▲"
+
+[node name="Down" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "▼"
+
+[node name="Left" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "◀"
+
+[node name="Right" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "▶"
+
+[node name="Sep" type="VSeparator" parent="InputOverlay/Grid"]
+layout_mode = 2
+
+[node name="A" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[A]"
+
+[node name="B" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[B]"
+
+[node name="X" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[X]"
+
+[node name="Y" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[Y]"
+
+[node name="LB" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[LB]"
+
+[node name="RB" type="Label" parent="InputOverlay/Grid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 0.25)
+text = "[RB]"

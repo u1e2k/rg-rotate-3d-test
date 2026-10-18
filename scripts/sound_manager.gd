@@ -50,6 +50,21 @@ func play_interact() -> void:
 	var stream = _generate_arpeggio([523.25, 659.25, 783.99, 1046.5], 0.05, 0.35)
 	_play_stream(stream, -5.0)
 
+func play_cursor() -> void:
+	# Subtle blip for menu navigation
+	var stream = _generate_tone_sweep(440.0, 520.0, 0.05, 0.25)
+	_play_stream(stream, -8.0)
+
+func play_confirm() -> void:
+	# Bright two-tone chime for selection
+	var stream = _generate_arpeggio([523.25, 783.99], 0.07, 0.35)
+	_play_stream(stream, -4.0)
+
+func play_cancel() -> void:
+	# Descending blip for back / cancel
+	var stream = _generate_tone_sweep(440.0, 260.0, 0.08, 0.3)
+	_play_stream(stream, -6.0)
+
 func play_engine_rev() -> void:
 	var stream = _generate_tone_sweep(180.0, 480.0, 0.3, 0.4)
 	_play_stream(stream, -6.0)
