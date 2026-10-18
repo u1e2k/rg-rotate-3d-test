@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://main3dscene720"]
+[gd_scene load_steps=32 format=3 uid="uid://main3dscene720"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/sound_manager.gd" id="2_sound"]
@@ -126,6 +126,49 @@ content_margin_left = 30.0
 content_margin_top = 24.0
 content_margin_right = 30.0
 content_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SettingsModal"]
+bg_color = Color(0.08, 0.11, 0.18, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.7, 1, 0.8)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+content_margin_left = 24.0
+content_margin_top = 20.0
+content_margin_right = 24.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Btn"]
+bg_color = Color(0.18, 0.28, 0.45, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnFocus"]
+bg_color = Color(0.25, 0.42, 0.68, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.9, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -411,7 +454,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
 theme_override_font_sizes/font_size = 13
-text = "[Space/A] ジャンプ　[Shift/B] ダッシュ　[Q/RB] 180°反転　[R] リセット"
+text = "[Space/A] ジャンプ　[Shift/B] ダッシュ　[Q/RB] 180°反転　[Start] 設定"
 horizontal_alignment = 1
 
 [node name="ClearBanner" type="CenterContainer" parent="HUD"]
@@ -442,4 +485,147 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "RG Rotate 3D Controller Test Complete"
+horizontal_alignment = 1
+
+[node name="SettingsMenu" type="Control" parent="HUD"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="HUD/SettingsMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Center" type="CenterContainer" parent="HUD/SettingsMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="HUD/SettingsMenu/Center"]
+custom_minimum_size = Vector2(560, 440)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_SettingsModal")
+
+[node name="Margin" type="MarginContainer" parent="HUD/SettingsMenu/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "⚙️ CONTROLLER SETTINGS"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="TurnSetting" type="VBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "🔄 旋回感度 (Turn Sensitivity)"
+
+[node name="HBox" type="HBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TurnSlider" type="HSlider" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting/HBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_neighbor_bottom = NodePath("../../CamSetting/HBox/CamSlider")
+focus_next = NodePath("../../CamSetting/HBox/CamSlider")
+min_value = 1.0
+max_value = 5.0
+step = 0.1
+value = 2.8
+
+[node name="TurnValueLabel" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/TurnSetting/HBox"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "2.8 (標準)"
+horizontal_alignment = 2
+
+[node name="CamSetting" type="VBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "🎥 カメラ追従速度 (Camera Smoothing)"
+
+[node name="HBox" type="HBoxContainer" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CamSlider" type="HSlider" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting/HBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+focus_neighbor_top = NodePath("../../TurnSetting/HBox/TurnSlider")
+focus_neighbor_bottom = NodePath("../../CloseButton")
+focus_next = NodePath("../../CloseButton")
+focus_previous = NodePath("../../TurnSetting/HBox/TurnSlider")
+min_value = 2.0
+max_value = 10.0
+step = 0.5
+value = 5.0
+
+[node name="CamValueLabel" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox/CamSetting/HBox"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "5.0"
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+focus_neighbor_top = NodePath("../CamSetting/HBox/CamSlider")
+focus_previous = NodePath("../CamSetting/HBox/CamSlider")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_Btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnFocus")
+theme_override_styles/focus = SubResource("StyleBoxFlat_BtnFocus")
+text = "閉じる / ゲームに戻る [Start / A]"
+
+[node name="Guide" type="Label" parent="HUD/SettingsMenu/Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "十字キー ▲▼: 項目移動 ｜ ◀▶: 感度調整 ｜ A/Start: 決定"
 horizontal_alignment = 1

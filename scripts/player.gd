@@ -2,6 +2,7 @@ class_name Player
 extends CharacterBody3D
 
 const SoundManagerScript = preload("res://scripts/sound_manager.gd")
+const SettingsScript = preload("res://scripts/settings_manager.gd")
 
 @export var forward_speed: float = 6.0
 @export var sprint_speed: float = 9.5
@@ -40,12 +41,18 @@ var spawn_position: Vector3 = Vector3(0, 1.5, 0)
 var spawn_rotation: float = 0.0
 
 func _ready() -> void:
+	SettingsScript.load_settings()
+	apply_settings()
 	spawn_position = global_position
 	spawn_rotation = rotation.y
 	# Detach camera mount to allow smoothed third-person follow
 	camera_mount.top_level = true
 	camera_mount.global_position = global_position
 	camera_mount.rotation.y = rotation.y
+
+func apply_settings() -> void:
+	turn_speed = SettingsScript.turn_sensitivity
+	camera_rotation_speed = SettingsScript.camera_smoothing
 
 func _physics_process(delta: float) -> void:
 	# Fall reset check
